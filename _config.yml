@@ -1,15 +1,18 @@
+lsi: false
+safe: true
+source: bolotova.github.io
+incremental: false
+highlighter: rouge
+gist:
+  noscript: false
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
 title: "Ксения Болотова"
 description: "Помогу создать эффективную команду аналитиков. Фанат метрик и AI инструментов."
 
-# GitHub Pages Configuration
-# For user/organization site (username.github.io), leave baseurl empty
-# For project site (username.github.io/repository-name), set baseurl to "/repository-name"
-baseurl: "" # Leave empty for user site, or set to "/repository-name" for project site
-url: "https://bolotova.github.io" # Replace 'yourusername' with your GitHub username
-
 # Build settings
-markdown: kramdown
-theme: null
 plugins:
   - jekyll-seo-tag
 
