@@ -1,11 +1,11 @@
-title: "Эксперт по формированию команд бизнес-аналитиков"
-description: "Фанат AI инструментов. Помогаю компаниям создавать эффективные команды аналитиков"
+title: "Ксения Болотова"
+description: "Помогу создать эффективную команду аналитиков. Фанат метрик и AI инструментов."
 
 # GitHub Pages Configuration
 # For user/organization site (username.github.io), leave baseurl empty
 # For project site (username.github.io/repository-name), set baseurl to "/repository-name"
 baseurl: "" # Leave empty for user site, or set to "/repository-name" for project site
-url: "https://yourusername.github.io" # Replace 'yourusername' with your GitHub username
+url: "https://bolotova.github.io" # Replace 'yourusername' with your GitHub username
 
 # Build settings
 markdown: kramdown
