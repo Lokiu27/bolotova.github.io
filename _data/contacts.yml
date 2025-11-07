@@ -1,0 +1,19 @@
+# Контактные данные
+# Эти данные используются для кнопок контактов в секции Hero
+# Обновите значения на свои реальные контакты
+
+# Email адрес (используется для кнопки "Email")
+email: "your.email@example.com"
+
+# Ссылка на Telegram профиль (используется для кнопки "Telegram")
+# Формат: https://t.me/username
+telegram: "https://t.me/yourusername"
+
+# Ссылка на GitHub профиль (используется для кнопки "GitHub")
+# Формат: https://github.com/username
+github: "https://github.com/yourusername"
+
+# Путь к файлу резюме (используется для кнопки "Резюме")
+# Файл должен находиться в директории assets/files/
+# Используется с фильтром relative_url в шаблоне для корректной работы с baseurl
+resume: "/assets/files/resume.pdf"

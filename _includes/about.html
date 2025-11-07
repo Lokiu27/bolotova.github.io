@@ -1,0 +1,22 @@
+<section class="about">
+  <div class="about-container">
+    <!-- Section Title and Description -->
+    <div class="about-header">
+      <h2 class="about-title">{{ site.data.about.title }}</h2>
+      <p class="about-description">{{ site.data.about.description }}</p>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div class="features-grid">
+      {% for feature in site.data.about.features %}
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-{{ feature.icon }}"></i>
+        </div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

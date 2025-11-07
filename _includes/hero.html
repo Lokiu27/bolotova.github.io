@@ -1,0 +1,39 @@
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <!-- Profile Image with Glow Effect -->
+      <div class="profile-image-wrapper">
+        <img src="{{ site.data.hero.profile_image | relative_url }}" alt="Profile Photo" class="profile-image">
+      </div>
+
+      <!-- Title and Subtitle -->
+      <h1 class="hero-title">
+        {{ site.data.hero.title }}
+        <span class="hero-subtitle">{{ site.data.hero.subtitle }}</span>
+      </h1>
+
+      <!-- Description -->
+      <p class="hero-description">{{ site.data.hero.description }}</p>
+
+      <!-- Contact Buttons -->
+      <div class="contact-buttons">
+        <a href="mailto:{{ site.data.contacts.email }}" class="btn btn-primary">
+          <i class="fas fa-envelope"></i>
+          <span>Email</span>
+        </a>
+        <a href="{{ site.data.contacts.telegram }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          <i class="fab fa-telegram"></i>
+          <span>Telegram</span>
+        </a>
+        <a href="{{ site.data.contacts.github }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          <i class="fab fa-github"></i>
+          <span>GitHub</span>
+        </a>
+        <a href="{{ site.data.contacts.resume | relative_url }}" target="_blank" class="btn btn-secondary">
+          <i class="fas fa-file-alt"></i>
+          <span>Резюме</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
