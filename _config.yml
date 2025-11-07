@@ -12,14 +12,4 @@ kramdown:
 title: "Ксения Болотова"
 description: "Помогу создать эффективную команду аналитиков. Фанат метрик и AI инструментов."
 
-# Build settings
-plugins:
-  - jekyll-seo-tag
 
-# Exclude from processing
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor
-  - README.md
