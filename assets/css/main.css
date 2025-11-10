@@ -87,13 +87,12 @@ ul {
 .sidebar {
   background-color: var(--color-sidebar-bg);
   padding: 3rem;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
-  overflow-y: auto;
   width: 330px;
-  max-width: 330px;
-  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .sidebar-content {
@@ -101,6 +100,7 @@ ul {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  height: 100%;
 }
 
 .profile-image-wrapper {
@@ -212,6 +212,8 @@ ul {
 .main-content {
   padding: 3rem;
   max-width: 900px;
+  margin-left: 330px;
+  min-height: 100vh;
 }
 
 .about {
@@ -271,9 +273,10 @@ ul {
     grid-template-columns: 280px 1fr;
   }
   .sidebar {
+    width: 280px;
     padding: 2rem;
   }
-  .profile-image {
+  .profile-image-wrapper {
     width: 140px;
     height: 140px;
   }
@@ -281,6 +284,7 @@ ul {
     font-size: 1.5rem;
   }
   .main-content {
+    margin-left: 280px;
     padding: 2rem;
   }
 }
@@ -291,10 +295,11 @@ ul {
   }
   .sidebar {
     position: static;
+    width: 100%;
     height: auto;
     padding: 2rem;
   }
-  .profile-image {
+  .profile-image-wrapper {
     width: 120px;
     height: 120px;
   }
@@ -308,6 +313,7 @@ ul {
     font-size: 0.8125rem;
   }
   .main-content {
+    margin-left: 0;
     padding: 1.5rem;
   }
   h1 {
@@ -325,7 +331,7 @@ ul {
   .sidebar {
     padding: 1.5rem;
   }
-  .profile-image {
+  .profile-image-wrapper {
     width: 100px;
     height: 100px;
   }
