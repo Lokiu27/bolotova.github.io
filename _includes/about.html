@@ -1,19 +1,12 @@
 <section class="about">
-  <div class="about-container">
-    <!-- Section Title and Description -->
-    <div class="about-header">
-      <h2 class="about-title">{{ site.data.about.title }}</h2>
-      <p class="about-description">{{ site.data.about.description }}</p>
-    </div>
+  <h2 class="about-title">{{ site.data.about.title }}</h2>
+  <p class="about-description">{{ site.data.about.description }}</p>
 
-    <!-- Features List -->
-    <div class="features-grid">
-      {% for feature in site.data.about.features %}
-      <div class="feature-card">
-        <h3 class="feature-title">{{ feature.title }}</h3>
-        <p class="feature-description">{{ feature.description }}</p>
-      </div>
-      {% endfor %}
+  <div class="features-grid">
+    {% for feature in site.data.about.features %}
+    <div class="feature-card">
+      <p class="feature-description">{{ feature.description }}</p>
     </div>
+    {% endfor %}
   </div>
 </section>

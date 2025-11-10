@@ -1,0 +1,36 @@
+<aside class="sidebar">
+  <div class="sidebar-content">
+    <!-- Profile Image -->
+    <div class="profile-image-wrapper">
+      <img src="{{ site.data.hero.profile_image | relative_url }}" alt="Profile Photo" class="profile-image">
+    </div>
+
+    <!-- Name -->
+    <h1 class="sidebar-name">
+      <span class="sidebar-name-first">{{ site.data.hero.title }}</span>
+      <span class="sidebar-name-last">{{ site.data.hero.subtitle }}</span>
+    </h1>
+
+    <!-- Roles -->
+    <ul class="sidebar-roles">
+      {% for feature in site.data.about.features %}
+      <li>{{ feature.title }}</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Experience -->
+    <div class="sidebar-experience">
+      ~22 года опыта в IT
+    </div>
+
+    <!-- Social Links -->
+    <nav class="sidebar-links">
+      <ul>
+        <li><a href="{{ site.data.contacts.telegram }}" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+        <li><a href="{{ site.data.contacts.github }}" target="_blank" rel="noopener noreferrer">Github</a></li>
+        <li><a href="mailto:{{ site.data.contacts.email }}">Email</a></li>
+        <li><a href="{{ site.data.contacts.resume | relative_url }}" target="_blank">Резюме</a></li>
+      </ul>
+    </nav>
+  </div>
+</aside>
