@@ -5,7 +5,7 @@
   --color-text-light: #666666;
   --color-background: #ffffff;
   --color-sidebar-bg: #f5f5f5;
-  --color-accent: #f4c430;
+  --color-accent: #87CEEB;
   --color-link: #333333;
   --color-link-hover: #000000;
   --color-border: #e0e0e0;
@@ -75,12 +75,15 @@ ul {
   padding: 0;
 }
 
+/* Main Layout */
 .main-wrapper {
-  display: grid;
-  grid-template-columns: 330px 1fr;
+  display: grid !important;
+  grid-template-columns: 330px 1fr !important;
   min-height: 100vh;
+  width: 100%;
 }
 
+/* Sidebar */
 .sidebar {
   background-color: var(--color-sidebar-bg);
   padding: 3rem;
@@ -88,6 +91,9 @@ ul {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  width: 330px;
+  max-width: 330px;
+  flex-shrink: 0;
 }
 
 .sidebar-content {
@@ -99,11 +105,14 @@ ul {
 
 .profile-image-wrapper {
   margin-bottom: 2rem;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
 }
 
 .profile-image {
-  width: 160px;
-  height: 160px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--color-accent);
@@ -199,6 +208,7 @@ ul {
   flex-shrink: 0;
 }
 
+/* Main Content */
 .main-content {
   padding: 3rem;
   max-width: 900px;
@@ -255,6 +265,7 @@ ul {
   color: var(--color-text-light);
 }
 
+/* Responsive */
 @media (max-width: 1024px) {
   .main-wrapper {
     grid-template-columns: 280px 1fr;
