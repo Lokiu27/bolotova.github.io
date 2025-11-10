@@ -6,13 +6,10 @@
       <p class="about-description">{{ site.data.about.description }}</p>
     </div>
 
-    <!-- Feature Cards Grid -->
+    <!-- Features List -->
     <div class="features-grid">
       {% for feature in site.data.about.features %}
       <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-{{ feature.icon }}"></i>
-        </div>
         <h3 class="feature-title">{{ feature.title }}</h3>
         <p class="feature-description">{{ feature.description }}</p>
       </div>
