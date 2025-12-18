@@ -1,22 +1,25 @@
-# Jekyll build files
-_site/
-.jekyll-cache/
-.jekyll-metadata
+# Dependencies
+node_modules/
 
-# Ruby/Bundler
-.bundle/
-vendor/
-Gemfile.lock
+# Build output
+dist/
 
-# macOS
-.DS_Store
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Editor files
+# Editor directories and files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Logs
-*.log
+# MacOS
+.DS_Store
+
+# Env
+.env
+.env.*

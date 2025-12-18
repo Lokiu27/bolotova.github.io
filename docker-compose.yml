@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    container_name: portfolio-web
+    ports:
+      - "8080:80"  # Хост:Контейнер
+    restart: unless-stopped
+    # Для локальной разработки можно раскомментировать volume,
+    # чтобы подменять статику без пересборки образа:
+    # volumes:
+    #   - ./dist:/usr/share/nginx/html:ro

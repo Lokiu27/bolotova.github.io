@@ -1,0 +1,247 @@
+/* Global CSS Variables and Base Styles */
+
+:root {
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-background: #ffffff;
+  --color-sidebar-bg: #f5f5f5;
+  --color-accent: #87CEEB;
+  --color-link: #333333;
+  --color-link-hover: #000000;
+  --color-border: #e0e0e0;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  
+  /* Responsive breakpoints */
+  --breakpoint-tablet: 1024px;
+  --breakpoint-mobile: 768px;
+  --breakpoint-small: 480px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  font-size: 16px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: var(--color-text-light);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Utility classes for responsive design */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text: #000000;
+    --color-text-light: #333333;
+    --color-background: #ffffff;
+    --color-sidebar-bg: #f0f0f0;
+    --color-accent: #0066cc;
+    --color-link: #0066cc;
+    --color-link-hover: #004499;
+    --color-border: #666666;
+  }
+}
+/* Image Optimization Styles */
+
+/* Optimize image loading and rendering */
+img {
+  /* Improve image rendering quality */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: optimize-contrast;
+  
+  /* Prevent layout shift during loading */
+  width: 100%;
+  height: auto;
+  
+  /* Smooth loading transition */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Lazy loading styles */
+.lazy-image {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.lazy-image.loading {
+  opacity: 0.5;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Performance optimizations */
+
+/* Enable hardware acceleration for smooth animations */
+.animated-element {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Optimize font loading */
+@font-face {
+  font-family: 'System';
+  src: local('.SF NS Text'), local('.SF UI Text'), local('San Francisco'), local('Roboto'), local('Segoe UI'), local('Helvetica Neue'), local('Lucida Grande'), sans-serif;
+  font-display: swap; /* Improve font loading performance */
+}
+
+/* Critical CSS for above-the-fold content */
+.critical-content {
+  /* Ensure critical content renders immediately */
+  contain: layout style paint;
+}
+
+/* Optimize scrolling performance */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Reduce paint complexity */
+.complex-element {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Performance hints for browsers */
+.performance-optimized {
+  /* Hint to browser about upcoming changes */
+  will-change: transform, opacity;
+  
+  /* Enable hardware acceleration */
+  transform: translateZ(0);
+  
+  /* Optimize compositing */
+  isolation: isolate;
+}
+
+/* Responsive image optimization */
+@media (max-width: 768px) {
+  img {
+    /* More aggressive optimization on mobile */
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Preload critical images */
+.critical-image {
+  /* High priority loading for critical images */
+  loading: eager;
+}
+
+/* Non-critical images */
+.non-critical-image {
+  /* Lazy load non-critical images */
+  loading: lazy;
+}
