@@ -96,6 +96,7 @@ defineProps<Props>()
   height: 160px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: 50% 0%;
   border: 4px solid var(--color-accent);
   margin-bottom: 2rem;
 }
