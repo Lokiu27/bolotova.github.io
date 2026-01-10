@@ -33,12 +33,23 @@ jobs:
 
     steps:
       # Формат секрета VPS_CONFIG (JSON):
+      # Вариант 1 (рекомендуется): с base64-кодированным SSH ключом
       # {
       #   "host": "your-vps-host.com",
       #   "username": "deploy",
       #   "port": "22",
       #   "project_path": "/path/to/project",
-      #   "ssh_key": "-----BEGIN OPENSSH PRIVATE KEY-----\n...\n-----END OPENSSH PRIVATE KEY-----"
+      #   "ssh_key_base64": "base64-encoded-ssh-key"
+      # }
+      # Для получения base64: cat ~/.ssh/id_rsa | base64 -w 0
+      #
+      # Вариант 2: с экранированным SSH ключом (используйте \n для переносов строк)
+      # {
+      #   "host": "your-vps-host.com",
+      #   "username": "deploy",
+      #   "port": "22",
+      #   "project_path": "/path/to/project",
+      #   "ssh_key": "-----BEGIN OPENSSH PRIVATE KEY-----\\n...\\n-----END OPENSSH PRIVATE KEY-----"
       # }
       - name: Parse VPS config
         id: vps_config
@@ -47,9 +58,20 @@ jobs:
           python3 << 'EOF'
           import json
           import os
+          import base64
           
           vps_config_json = os.environ['VPS_CONFIG']
           config = json.loads(vps_config_json)
+          
+          # Получаем SSH ключ (поддерживаем оба формата)
+          if 'ssh_key_base64' in config:
+              # Декодируем SSH ключ из base64
+              ssh_key = base64.b64decode(config['ssh_key_base64']).decode('utf-8')
+          elif 'ssh_key' in config:
+              # Используем ssh_key напрямую (должен быть экранирован в JSON)
+              ssh_key = config['ssh_key'].replace('\\n', '\n')
+          else:
+              raise ValueError("Не найден ssh_key или ssh_key_base64 в конфигурации")
           
           # Записываем значения в outputs
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
@@ -59,7 +81,7 @@ jobs:
               f.write(f"project_path={config['project_path']}\n")
               # SSH ключ записываем с многострочным форматом
               f.write("ssh_key<<EOF\n")
-              f.write(config['ssh_key'])
+              f.write(ssh_key)
               f.write("\nEOF\n")
           EOF
         env:
