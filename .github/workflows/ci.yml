@@ -32,16 +32,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Формат секрета VPS_CONFIG (JSON):
+      # {
+      #   "host": "your-vps-host.com",
+      #   "username": "deploy",
+      #   "port": "22",
+      #   "project_path": "/path/to/project",
+      #   "ssh_key": "-----BEGIN OPENSSH PRIVATE KEY-----\n...\n-----END OPENSSH PRIVATE KEY-----"
+      # }
+      - name: Parse VPS config
+        id: vps_config
+        run: |
+          # Парсим JSON конфигурацию используя Python (встроен в GitHub Actions)
+          python3 << 'EOF'
+          import json
+          import os
+          
+          vps_config_json = os.environ['VPS_CONFIG']
+          config = json.loads(vps_config_json)
+          
+          # Записываем значения в outputs
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"host={config['host']}\n")
+              f.write(f"username={config['username']}\n")
+              f.write(f"port={config['port']}\n")
+              f.write(f"project_path={config['project_path']}\n")
+              # SSH ключ записываем с многострочным форматом
+              f.write("ssh_key<<EOF\n")
+              f.write(config['ssh_key'])
+              f.write("\nEOF\n")
+          EOF
+        env:
+          VPS_CONFIG: ${{ secrets.VPS_CONFIG }}
+
       - name: Deploy to VPS over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
+          host: ${{ steps.vps_config.outputs.host }}
+          username: ${{ steps.vps_config.outputs.username }}
+          key: ${{ steps.vps_config.outputs.ssh_key }}
+          port: ${{ steps.vps_config.outputs.port }}
           script: |
-            cd ${{ secrets.VPS_PROJECT_PATH }}
+            cd ${{ steps.vps_config.outputs.project_path }}
             git pull origin main
-            npm install
-            npm run build
             docker-compose up -d --build
