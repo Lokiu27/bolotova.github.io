@@ -158,6 +158,6 @@ jobs:
           key: ${{ steps.vps_config.outputs.ssh_key }}
           port: ${{ steps.vps_config.outputs.port }}
           script: |
+            git clone https://github.com/Lokiu27/bolotova.github.io
             cd ${{ steps.vps_config.outputs.project_path }}
-            git pull origin main
             docker-compose up -d --build
