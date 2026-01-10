@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer-content">
       <p class="copyright">
-        © {{ currentYear }} Эксперт по формированию команд бизнес-аналитиков. Все права защищены.
+        © {{ currentYear }} Ксения Болотова. Все права защищены.
       </p>
     </div>
   </footer>
