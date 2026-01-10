@@ -59,9 +59,58 @@ jobs:
           import json
           import os
           import base64
+          import re
           
           vps_config_json = os.environ['VPS_CONFIG']
-          config = json.loads(vps_config_json)
+          
+          # Функция для очистки JSON от управляющих символов в строковых значениях
+          def clean_json_strings(json_str):
+              # Простой подход: находим все строковые значения и заменяем в них управляющие символы
+              # Ищем паттерн: "key": "value" где value может быть многострочным
+              def fix_control_chars(match):
+                  prefix = match.group(1)  # все до значения
+                  value = match.group(2)   # само значение
+                  # Заменяем управляющие символы на экранированные версии
+                  value = value.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+                  return prefix + '"' + value + '"'
+              
+              # Паттерн для поиска: "ключ": "многострочное значение"
+              # Ищем кавычку, затем двоеточие, пробелы, кавычку, затем содержимое до закрывающей кавычки
+              pattern = r'("ssh_key"\s*:\s*")([^"]*(?:\n|\r|\t)[^"]*)"'
+              result = re.sub(pattern, fix_control_chars, json_str, flags=re.DOTALL)
+              
+              return result
+          
+          try:
+              # Пытаемся распарсить как есть
+              config = json.loads(vps_config_json)
+          except json.JSONDecodeError as e:
+              # Если не получилось, пытаемся очистить от управляющих символов
+              try:
+                  cleaned_json = clean_json_strings(vps_config_json)
+                  config = json.loads(cleaned_json)
+              except (json.JSONDecodeError, Exception) as e2:
+                  print("=" * 80)
+                  print("ОШИБКА: Не удалось распарсить JSON конфигурацию")
+                  print("=" * 80)
+                  print(f"Детали ошибки: {e2}")
+                  if hasattr(e2, 'pos'):
+                      pos = e2.pos
+                      start = max(0, pos - 100)
+                      end = min(len(vps_config_json), pos + 100)
+                      print(f"\nКонтекст вокруг ошибки (позиция {pos}):")
+                      print(vps_config_json[start:end])
+                  print("\n" + "=" * 80)
+                  print("РЕШЕНИЕ: Используйте base64 для SSH ключа!")
+                  print("=" * 80)
+                  print("1. Закодируйте ваш SSH ключ в base64:")
+                  print("   cat ~/.ssh/id_rsa | base64 -w 0")
+                  print("   (или на macOS: cat ~/.ssh/id_rsa | base64)")
+                  print("\n2. Используйте поле 'ssh_key_base64' вместо 'ssh_key' в JSON:")
+                  print('   {"host": "...", "username": "...", "port": "22",')
+                  print('    "project_path": "...", "ssh_key_base64": "BASE64_STRING"}')
+                  print("=" * 80)
+                  raise ValueError("JSON парсинг не удался. Используйте ssh_key_base64 для SSH ключа.")
           
           # Получаем SSH ключ (поддерживаем оба формата)
           if 'ssh_key_base64' in config:
@@ -69,7 +118,7 @@ jobs:
               ssh_key = base64.b64decode(config['ssh_key_base64']).decode('utf-8')
           elif 'ssh_key' in config:
               # Используем ssh_key напрямую (должен быть экранирован в JSON)
-              ssh_key = config['ssh_key'].replace('\\n', '\n')
+              ssh_key = config['ssh_key'].replace('\\n', '\n').replace('\\r', '\r').replace('\\t', '\t')
           else:
               raise ValueError("Не найден ssh_key или ssh_key_base64 в конфигурации")
           
