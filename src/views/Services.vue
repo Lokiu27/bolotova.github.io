@@ -4,31 +4,18 @@
       <div class="projects-header">
         <h2 class="projects-title">Мои проекты</h2>
         <p class="projects-description">
-          Примеры успешных проектов по формированию команд бизнес-аналитиков и внедрению современных технологий.
+         Мои вайб-кодинг пет-проекты.
         </p>
       </div>
       
       <div class="projects-grid">
         <div class="project-card">
-          <h3 class="project-title">Формирование команды аналитиков для FinTech стартапа</h3>
+          <h3 class="project-title">Мини llm в браузере</h3>
           <p class="project-description">
-            Создание команды из 8 бизнес-аналитиков для финтех компании. Внедрение современных методологий анализа и AI инструментов для обработки финансовых данных.
+            Не знаю, еще не придумала.
           </p>
         </div>
         
-        <div class="project-card">
-          <h3 class="project-title">Внедрение AI инструментов в крупной IT компании</h3>
-          <p class="project-description">
-            Интеграция ChatGPT, Claude и других AI решений в рабочие процессы команды из 15 аналитиков. Повышение эффективности на 40%.
-          </p>
-        </div>
-        
-        <div class="project-card">
-          <h3 class="project-title">Оптимизация процессов анализа в e-commerce</h3>
-          <p class="project-description">
-            Реструктуризация процессов бизнес-анализа для интернет-магазина. Сокращение времени подготовки отчетов в 3 раза.
-          </p>
-        </div>
       </div>
     </section>
   </div>
