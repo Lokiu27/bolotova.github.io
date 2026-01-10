@@ -5,9 +5,11 @@ services:
     build: .
     container_name: portfolio-web
     ports:
-      - "8080:80"  # Хост:Контейнер
+      - "8080:80"   # HTTP для локальных проверок
+      - "443:443"   # HTTPS от Cloudflare к Nginx (Origin Certificate)
     restart: unless-stopped
     # Для локальной разработки можно раскомментировать volume,
     # чтобы подменять статику без пересборки образа:
     # volumes:
     #   - ./dist:/usr/share/nginx/html:ro
+    #   - /etc/nginx/ssl:/etc/nginx/ssl:ro  # примонтировать Origin Certificate с хоста
