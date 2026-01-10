@@ -63,21 +63,35 @@ jobs:
           
           vps_config_json = os.environ['VPS_CONFIG']
           
-          # Функция для очистки JSON от управляющих символов в строковых значениях
+          # Функция для очистки JSON от управляющих символов и объединения многострочных base64 строк
           def clean_json_strings(json_str):
-              # Простой подход: находим все строковые значения и заменяем в них управляющие символы
-              # Ищем паттерн: "key": "value" где value может быть многострочным
+              # Обрабатываем случай, когда base64 строка разбита на несколько строк
+              # Используем простой подход: находим все между "ssh_key_base64": " и следующей кавычкой
+              # которая не экранирована и за которой следует запятая или закрывающая скобка
+              
+              def fix_base64_multiline(match):
+                  prefix = match.group(1)  # "ssh_key_base64": "
+                  value = match.group(2)   # содержимое (может быть многострочным)
+                  # Удаляем все пробелы, переносы строк и табуляции из base64
+                  cleaned_value = re.sub(r'\s+', '', value)
+                  return prefix + cleaned_value + '"'
+              
+              # Паттерн для поиска: "ssh_key_base64": "многострочное значение"
+              # Используем non-greedy match до следующей кавычки, за которой идет запятая или }
+              pattern = r'("ssh_key_base64"\s*:\s*")(.*?)"(?=\s*[,}])'
+              result = re.sub(pattern, fix_base64_multiline, json_str, flags=re.DOTALL)
+              
+              # Теперь обрабатываем обычные строковые значения с управляющими символами
               def fix_control_chars(match):
-                  prefix = match.group(1)  # все до значения
-                  value = match.group(2)   # само значение
+                  prefix = match.group(1)
+                  value = match.group(2)
                   # Заменяем управляющие символы на экранированные версии
                   value = value.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
-                  return prefix + '"' + value + '"'
+                  return prefix + value + '"'
               
-              # Паттерн для поиска: "ключ": "многострочное значение"
-              # Ищем кавычку, затем двоеточие, пробелы, кавычку, затем содержимое до закрывающей кавычки
-              pattern = r'("ssh_key"\s*:\s*")([^"]*(?:\n|\r|\t)[^"]*)"'
-              result = re.sub(pattern, fix_control_chars, json_str, flags=re.DOTALL)
+              # Паттерн для других строковых полей с управляющими символами
+              pattern2 = r'("(?:host|username|port|project_path|ssh_key)"\s*:\s*")([^"]*(?:\n|\r|\t)[^"]*)"'
+              result = re.sub(pattern2, fix_control_chars, result, flags=re.DOTALL)
               
               return result
           
@@ -85,7 +99,7 @@ jobs:
               # Пытаемся распарсить как есть
               config = json.loads(vps_config_json)
           except json.JSONDecodeError as e:
-              # Если не получилось, пытаемся очистить от управляющих символов
+              # Если не получилось, пытаемся очистить от управляющих символов и объединить многострочные base64
               try:
                   cleaned_json = clean_json_strings(vps_config_json)
                   config = json.loads(cleaned_json)
