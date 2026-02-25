@@ -1,16 +1,6 @@
-/* Global CSS Variables and Base Styles */
+/* Global Base Styles */
 
 :root {
-  --color-text: #333333;
-  --color-text-light: #666666;
-  --color-background: #ffffff;
-  --color-sidebar-bg: #f5f5f5;
-  --color-accent: #87CEEB;
-  --color-link: #333333;
-  --color-link-hover: #000000;
-  --color-border: #e0e0e0;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  
   /* Responsive breakpoints */
   --breakpoint-tablet: 1024px;
   --breakpoint-mobile: 768px;
@@ -21,6 +11,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: crosshair;
 }
 
 html {
@@ -29,25 +20,33 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--color-background);
-  color: var(--color-text);
-  line-height: 1.6;
-  font-size: 16px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  background-color: var(--bg-void, #090a0d);
+  color: var(--text-primary, #e0e0e0);
+  line-height: 1.5;
+  font-size: 14px;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Mono uppercase utility class */
+.mono-upper {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 a {
-  color: var(--color-link);
+  color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast);
+  cursor: crosshair;
 }
 
 a:hover {
-  color: var(--color-link-hover);
+  color: var(--accent-cyan);
+  cursor: crosshair;
 }
 
 img {
@@ -80,7 +79,7 @@ h3 {
 
 p {
   margin-bottom: 1.5rem;
-  color: var(--color-text-light);
+  color: var(--text-secondary);
 }
 
 ul {
@@ -109,7 +108,7 @@ ul {
 
 /* Focus styles for accessibility */
 *:focus {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent-cyan);
   outline-offset: 2px;
 }
 
@@ -128,14 +127,12 @@ ul {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --color-text: #000000;
-    --color-text-light: #333333;
-    --color-background: #ffffff;
-    --color-sidebar-bg: #f0f0f0;
-    --color-accent: #0066cc;
-    --color-link: #0066cc;
-    --color-link-hover: #004499;
-    --color-border: #666666;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --bg-void: #ffffff;
+    --bg-panel: #f0f0f0;
+    --accent-cyan: #0066cc;
+    --border-dim: #666666;
   }
 }
 /* Image Optimization Styles */
@@ -244,4 +241,14 @@ img {
 .non-critical-image {
   /* Lazy load non-critical images */
   loading: lazy;
+}
+
+/* Crosshair cursor for interactive elements */
+button,
+input,
+textarea,
+select,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+  cursor: crosshair;
 }

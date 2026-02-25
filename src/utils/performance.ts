@@ -35,7 +35,9 @@ export class PerformanceMonitor {
     performance.measure('app-load-time', 'app-load-start', 'app-load-end')
     
     const loadMeasure = performance.getEntriesByName('app-load-time')[0]
-    this.metrics.loadTime = loadMeasure.duration
+    if (loadMeasure) {
+      this.metrics.loadTime = loadMeasure.duration
+    }
   }
 
   /**
@@ -46,7 +48,9 @@ export class PerformanceMonitor {
     performance.measure('app-render-time', 'app-load-start', 'app-render-complete')
     
     const renderMeasure = performance.getEntriesByName('app-render-time')[0]
-    this.metrics.renderTime = renderMeasure.duration
+    if (renderMeasure) {
+      this.metrics.renderTime = renderMeasure.duration
+    }
   }
 
   /**
@@ -57,7 +61,9 @@ export class PerformanceMonitor {
     performance.measure('app-interactive-time', 'app-load-start', 'app-interactive')
     
     const interactiveMeasure = performance.getEntriesByName('app-interactive-time')[0]
-    this.metrics.interactiveTime = interactiveMeasure.duration
+    if (interactiveMeasure) {
+      this.metrics.interactiveTime = interactiveMeasure.duration
+    }
   }
 
   /**

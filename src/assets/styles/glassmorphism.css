@@ -1,0 +1,66 @@
+/**
+ * Glassmorphism Base Styles
+ * Базовые стили для glass эффектов с fallback для браузеров без backdrop-filter
+ */
+
+/* Базовый glass эффект */
+.glass {
+  background: rgba(14, 17, 22, var(--glass-opacity));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(61, 68, 80, var(--glass-border-opacity));
+  transition: all var(--transition-normal);
+}
+
+/* Fallback для браузеров без backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass {
+    background: rgba(14, 17, 22, 0.8);
+    border: 2px solid var(--border-bright);
+  }
+}
+
+/* Glass hover эффект */
+.glass-hover:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px var(--accent-cyan-glow);
+  transform: translateY(-2px);
+}
+
+/* Cyber corners для glass элементов */
+.glass-corners::before,
+.glass-corners::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--accent-cyan);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.glass-corners::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.glass-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+.glass-corners:hover::before,
+.glass-corners:hover::after {
+  opacity: 1;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image: 
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
