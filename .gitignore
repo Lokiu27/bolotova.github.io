@@ -18,6 +18,9 @@ yarn-error.log*
 *~
 *.md
 
+# Exception: allow resume markdown file
+!src/data/*.md
+
 # macOS
 .DS_Store
 **/.DS_Store
