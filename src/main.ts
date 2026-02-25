@@ -10,6 +10,7 @@ import { performanceMonitor } from './utils/performance'
 // Import views
 import Home from './views/Home.vue'
 import Services from './views/Services.vue'
+import Resume from './views/Resume.vue'
 
 // Start performance monitoring
 performanceMonitor.markLoadStart()
@@ -26,6 +27,14 @@ const router = createRouter({
       path: '/projects',
       name: 'Projects',
       component: Services
+    },
+    {
+      path: '/resume',
+      name: 'Resume',
+      component: Resume,
+      meta: {
+        title: 'Резюме'
+      }
     }
   ],
   scrollBehavior(to, from, savedPosition) {

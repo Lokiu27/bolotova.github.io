@@ -126,7 +126,7 @@ describe('Responsive Design', () => {
         // Verify no horizontal overflow by checking that elements don't exceed viewport width
         // This is a basic check - in a real browser environment, we'd check computed styles
         expect(sidebarElement.tagName).toBe('ASIDE')
-        expect(aboutElement.tagName).toBe('SECTION')
+        expect(aboutElement.tagName).toBe('MAIN')
         expect(footerElement.tagName).toBe('FOOTER')
       }
     ), { numRuns: 100 })

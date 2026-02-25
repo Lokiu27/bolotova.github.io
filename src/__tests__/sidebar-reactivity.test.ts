@@ -45,6 +45,23 @@ describe('Sidebar Reactivity Property Tests', () => {
             props: {
               profileData: initialHeroData,
               contactData: contactsData
+            },
+            global: {
+              stubs: {
+                'router-link': {
+                  template: '<a :class="$attrs.class"><slot /></a>',
+                  props: ['to']
+                },
+                LazyImage: {
+                  template: '<img :src="src" :alt="alt" :class="$attrs.class" />',
+                  props: ['src', 'alt']
+                },
+                GlassPanel: {
+                  template: '<div class="glass-panel"><slot /><div v-if="$slots.footer" class="footer"><slot name="footer" /></div></div>',
+                  props: []
+                },
+                StatusPanel: true
+              }
             }
           })
 
@@ -93,6 +110,23 @@ describe('Sidebar Reactivity Property Tests', () => {
             props: {
               profileData: heroData,
               contactData: initialContactsData
+            },
+            global: {
+              stubs: {
+                'router-link': {
+                  template: '<a :class="$attrs.class"><slot /></a>',
+                  props: ['to']
+                },
+                LazyImage: {
+                  template: '<img :src="src" :alt="alt" :class="$attrs.class" />',
+                  props: ['src', 'alt']
+                },
+                GlassPanel: {
+                  template: '<div class="glass-panel"><slot /><div v-if="$slots.footer" class="footer"><slot name="footer" /></div></div>',
+                  props: []
+                },
+                StatusPanel: true
+              }
             }
           })
 
@@ -131,6 +165,23 @@ describe('Sidebar Reactivity Property Tests', () => {
             props: {
               profileData: undefined,
               contactData: undefined
+            },
+            global: {
+              stubs: {
+                'router-link': {
+                  template: '<a :class="$attrs.class"><slot /></a>',
+                  props: ['to']
+                },
+                LazyImage: {
+                  template: '<img :src="src" :alt="alt" :class="$attrs.class" />',
+                  props: ['src', 'alt']
+                },
+                GlassPanel: {
+                  template: '<div class="glass-panel"><slot /><div v-if="$slots.footer" class="footer"><slot name="footer" /></div></div>',
+                  props: []
+                },
+                StatusPanel: true
+              }
             }
           })
 
@@ -171,6 +222,23 @@ describe('Sidebar Reactivity Property Tests', () => {
             props: {
               profileData: heroData,
               contactData: contactsData
+            },
+            global: {
+              stubs: {
+                'router-link': {
+                  template: '<a :class="$attrs.class"><slot /></a>',
+                  props: ['to']
+                },
+                LazyImage: {
+                  template: '<img :src="src" :alt="alt" :class="$attrs.class" />',
+                  props: ['src', 'alt']
+                },
+                GlassPanel: {
+                  template: '<div class="glass-panel"><slot /><div v-if="$slots.footer" class="footer"><slot name="footer" /></div></div>',
+                  props: []
+                },
+                StatusPanel: true
+              }
             }
           })
 

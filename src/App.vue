@@ -90,13 +90,16 @@ onMounted(() => {
       />
       
       <main id="main-content" class="app-main" role="main">
-        <transition name="page" mode="out-in">
-          <router-view 
-            :hero-data="heroData"
-            :about-data="aboutData"
-            :contact-data="contactsData"
-          />
-        </transition>
+        <router-view v-slot="{ Component }">
+          <transition name="page" mode="out-in">
+            <component 
+              :is="Component"
+              :hero-data="heroData"
+              :about-data="aboutData"
+              :contact-data="contactsData"
+            />
+          </transition>
+        </router-view>
         <Footer />
       </main>
     </div>

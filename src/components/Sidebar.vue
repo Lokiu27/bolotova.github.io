@@ -24,6 +24,10 @@
           <span class="nav-arrow" aria-hidden="true">></span>
           <span class="nav-text">Проекты</span>
         </router-link>
+        <router-link to="/resume" class="nav-link" active-class="active" aria-label="Navigate to resume page">
+          <span class="nav-arrow" aria-hidden="true">></span>
+          <span class="nav-text">Резюме</span>
+        </router-link>
       </nav>
       
       <div class="contacts-section" role="navigation" aria-label="Contact links">
@@ -54,16 +58,6 @@
           aria-label="Open GitHub profile in new tab"
         >
           GitHub
-        </a>
-        <a 
-          v-if="contactData?.resume" 
-          :href="contactData.resume"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="contact-link resume"
-          aria-label="Download resume in new tab"
-        >
-          Resume
         </a>
       </div>
       
