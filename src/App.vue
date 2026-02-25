@@ -2,7 +2,12 @@
 import { ref, onMounted, provide } from 'vue'
 import Sidebar from './components/Sidebar.vue'
 import Footer from './components/Footer.vue'
+import WebGLBackground from './components/WebGLBackground.vue'
+import ScanlineOverlay from './components/ScanlineOverlay.vue'
 import type { HeroData, AboutData, ContactsData } from './types'
+import { heroDataKey, aboutDataKey, contactsDataKey } from './types/injection-keys'
+import { validateHeroData, validateAboutData, validateContactsData } from './schemas/data-schemas'
+import { ZodError } from 'zod'
 
 const heroData = ref<HeroData>()
 const aboutData = ref<AboutData>()
@@ -10,10 +15,10 @@ const contactsData = ref<ContactsData>()
 const loading = ref(true)
 const error = ref<string>()
 
-// Provide data to child components
-provide('heroData', heroData)
-provide('aboutData', aboutData)
-provide('contactsData', contactsData)
+// Provide data to child components with typed keys
+provide(heroDataKey, heroData)
+provide(aboutDataKey, aboutData)
+provide(contactsDataKey, contactsData)
 
 const loadData = async () => {
   try {
@@ -27,11 +32,27 @@ const loadData = async () => {
       throw new Error('Failed to load data')
     }
 
-    heroData.value = await heroResponse.json()
-    aboutData.value = await aboutResponse.json()
-    contactsData.value = await contactsResponse.json()
+    // Parse JSON and validate with Zod schemas
+    const heroJson = await heroResponse.json()
+    const aboutJson = await aboutResponse.json()
+    const contactsJson = await contactsResponse.json()
+
+    // Validate data before assigning
+    heroData.value = validateHeroData(heroJson)
+    aboutData.value = validateAboutData(aboutJson)
+    contactsData.value = validateContactsData(contactsJson)
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unknown error occurred'
+    if (err instanceof ZodError) {
+      // Handle validation errors with user-friendly messages
+      const validationErrors = err.errors?.map(e => `${e.path.join('.')}: ${e.message}`).join(', ') || 'Validation failed'
+      error.value = `Invalid data format: ${validationErrors}`
+    } else if (err && typeof err === 'object' && 'errors' in err && Array.isArray((err as any).errors)) {
+      // Handle ZodError-like objects that might not be instanceof ZodError
+      const validationErrors = (err as any).errors.map((e: any) => `${e.path?.join('.') || 'unknown'}: ${e.message}`).join(', ')
+      error.value = `Invalid data format: ${validationErrors}`
+    } else {
+      error.value = err instanceof Error ? err.message : 'Unknown error occurred'
+    }
   } finally {
     loading.value = false
   }
@@ -44,22 +65,31 @@ onMounted(() => {
 
 <template>
   <div class="app">
-    <div v-if="loading" class="loading">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- WebGL Background Layer (z-index: 0) -->
+    <WebGLBackground :enabled="true" />
+    
+    <!-- Scanline Overlay Layer (z-index: 9999) -->
+    <ScanlineOverlay :enabled="true" />
+    
+    <div v-if="loading" class="loading" role="status" aria-live="polite">
       Загрузка...
     </div>
     
-    <div v-else-if="error" class="error">
+    <div v-else-if="error" class="error" role="alert" aria-live="assertive">
       Ошибка загрузки: {{ error }}
     </div>
     
-    <div v-else class="app-layout">
+    <div v-show="!loading && !error" class="app-layout">
       <Sidebar 
         :profile-data="heroData" 
         :contact-data="contactsData"
         class="app-sidebar"
       />
       
-      <main class="app-main">
+      <main id="main-content" class="app-main" role="main">
         <transition name="page" mode="out-in">
           <router-view 
             :hero-data="heroData"
@@ -76,9 +106,31 @@ onMounted(() => {
 <style scoped>
 .app {
   min-height: 100vh;
-  font-family: var(--font-sans);
-  background-color: var(--color-background);
-  color: var(--color-text);
+  font-family: var(--font-mono);
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  position: relative;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-cyan);
+  color: var(--bg-void);
+  padding: 8px 16px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 10000;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 0;
 }
 
 .loading, .error {
@@ -86,7 +138,12 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  font-size: 1.2rem;
+  font-size: var(--font-size-xl);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 10;
 }
 
 .error {
@@ -96,23 +153,31 @@ onMounted(() => {
 .app-layout {
   position: relative;
   min-height: 100vh;
+  z-index: 1;
 }
 
 .app-sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 330px;
+  width: var(--sidebar-width);
   height: 100vh;
   z-index: 100;
   overflow-y: auto;
 }
 
 .app-main {
-  margin-left: 330px;
+  margin-left: var(--sidebar-width);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  /* Grid background pattern 40x40px */
+  background-image: 
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 0;
 }
 
 /* Tablet styles */
@@ -147,7 +212,7 @@ onMounted(() => {
 /* Page transition animations */
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
 }
 
 .page-enter-from {
@@ -169,7 +234,7 @@ onMounted(() => {
 /* Small mobile styles */
 @media (max-width: 480px) {
   .app {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 }
 </style>

@@ -1,28 +1,34 @@
 <template>
   <div class="projects-view">
-    <section class="projects-section">
-      <div class="projects-header">
-        <h2 class="projects-title">Мои проекты</h2>
-        <p class="projects-description">
-         Мои вайб-кодинг пет-проекты.
+    <section class="projects-section" aria-labelledby="projects-heading">
+      <!-- Hero section -->
+      <header class="hero-section">
+        <h2 id="projects-heading" class="tagline glitch-hover">Мои проекты</h2>
+        <p class="tagline-highlight">
+          Мои вайб-кодинг пет-проекты.
         </p>
-      </div>
+      </header>
       
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3 class="project-title">Мини llm в браузере</h3>
+      <!-- Projects grid with GlassCard -->
+      <div class="projects-grid" role="list" aria-label="Projects">
+        <GlassCard 
+          class="project-card"
+          :padding="'24px'"
+          role="listitem"
+        >
+          <div class="card-index" aria-hidden="true">01</div>
+          <h3 class="project-title glitch-hover">Мини llm в браузере</h3>
           <p class="project-description">
             Не знаю, еще не придумала.
           </p>
-        </div>
-        
+        </GlassCard>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-// No props needed for this static content view
+import GlassCard from '../components/GlassCard.vue'
 </script>
 
 <style scoped>
@@ -32,61 +38,82 @@
 
 .projects-section {
   padding: 3rem;
-  max-width: 900px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Hero section */
+.hero-section {
   margin-bottom: 3rem;
-}
-
-.projects-header {
-  margin-bottom: 3rem;
-}
-
-.projects-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 2rem;
-  color: var(--color-text);
-}
-
-.projects-description {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--color-text-light);
-  margin-bottom: 1.5rem;
-}
-
-.projects-grid {
-  display: grid;
-  gap: 2rem;
-}
-
-.project-card {
-  margin-bottom: 2rem;
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: none;
   text-align: left;
 }
 
+.tagline {
+  font-size: var(--font-size-3xl, 32px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  color: var(--text-primary, #e0e0e0);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.tagline-highlight {
+  font-size: var(--font-size-lg, 16px);
+  line-height: 1.8;
+  color: var(--text-secondary, #858b99);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  text-shadow: 0 0 10px var(--accent-cyan-glow, rgba(0, 240, 255, 0.3));
+}
+
+/* Projects grid with auto-fit */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--grid-unit, 24px);
+}
+
+.project-card {
+  position: relative;
+}
+
+/* Card index - cyberpunk style */
+.card-index {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: var(--font-size-2xl, 24px);
+  font-weight: 700;
+  color: var(--accent-cyan, #00f0ff);
+  opacity: 0.3;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
 .project-title {
-  font-size: 1.125rem;
+  font-size: var(--font-size-xl, 18px);
   font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 0.5rem;
+  color: var(--text-primary, #e0e0e0);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
 }
 
 .project-description {
-  font-size: 1rem;
+  font-size: var(--font-size-base, 14px);
   line-height: 1.7;
-  color: var(--color-text-light);
+  color: var(--text-secondary, #858b99);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
 }
 
 /* Tablet styles */
 @media (max-width: 1024px) {
   .projects-section {
     padding: 2rem;
+  }
+  
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 
@@ -96,8 +123,13 @@
     padding: 1.5rem;
   }
   
-  .projects-title {
-    font-size: 1.25rem;
+  .tagline {
+    font-size: var(--font-size-2xl, 24px);
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
@@ -107,8 +139,8 @@
     padding: 1rem;
   }
   
-  .projects-title {
-    font-size: 1.125rem;
+  .tagline {
+    font-size: var(--font-size-xl, 18px);
   }
 }
 </style>
