@@ -27,15 +27,16 @@ withDefaults(defineProps<Props>(), {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid var(--color-border);
-  border-top: 4px solid var(--color-accent);
+  border: 4px solid var(--border-dim);
+  border-top: 4px solid var(--accent-cyan);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  will-change: transform;
 }
 
 .loading-message {
   margin-top: 1rem;
-  color: var(--color-text-light);
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -48,7 +49,7 @@ withDefaults(defineProps<Props>(), {
 @media (prefers-reduced-motion: reduce) {
   .spinner {
     animation: none;
-    border-top-color: var(--color-accent);
+    border-top-color: var(--accent-cyan);
   }
 }
 </style>
