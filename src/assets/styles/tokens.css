@@ -1,0 +1,258 @@
+/**
+ * Design Tokens - Glassmorphism Cyberpunk Theme
+ * Централизованная система CSS переменных для управления визуальными параметрами
+ */
+
+:root {
+  /* Цвета фона */
+  --bg-void: #090a0d;
+  --bg-panel: #0e1116;
+  --bg-active: #151921;
+  
+  /* Границы */
+  --border-dim: #232730;
+  --border-bright: #3d4450;
+  
+  /* Акцентные цвета */
+  --accent-cyan: #00f0ff;
+  --accent-cyan-dim: rgba(0, 240, 255, 0.1);
+  --accent-cyan-glow: rgba(0, 240, 255, 0.3);
+  
+  /* Текст */
+  --text-primary: #e0e0e0;
+  --text-secondary: #858b99;
+  --text-tertiary: #7a8290; /* Скорректировано для WCAG AA (было #4a505c) */
+  
+  /* Типографика */
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  
+  /* Spacing */
+  --grid-unit: 24px;
+  --sidebar-width: 320px;
+  --topbar-height: 60px;
+  
+  /* Радиусы */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  
+  /* Анимации */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Glassmorphism */
+  --glass-blur: 10px;
+  --glass-opacity: 0.1;
+  --glass-border-opacity: 0.2;
+  
+  /* Focus styles for accessibility */
+  --focus-outline-width: 2px;
+  --focus-outline-offset: 2px;
+  --focus-outline-color: var(--accent-cyan);
+}
+
+/* ============================================
+   ACCESSIBILITY - FOCUS STYLES
+   ============================================ */
+
+/* Focus-visible styles for keyboard navigation */
+*:focus-visible {
+  outline: var(--focus-outline-width) solid var(--focus-outline-color);
+  outline-offset: var(--focus-outline-offset);
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.2);
+}
+
+/* Remove default focus outline */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Interactive elements focus styles */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--focus-outline-width) solid var(--focus-outline-color);
+  outline-offset: var(--focus-outline-offset);
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.2);
+}
+
+/* Glass card focus styles */
+.glass-card:focus-visible {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 0 4px rgba(0, 240, 255, 0.2);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE STYLES
+   ============================================ */
+
+/* Mobile breakpoint: < 768px */
+@media (max-width: 767px) {
+  :root {
+    /* Адаптированные размеры шрифтов через clamp() */
+    --font-size-xs: clamp(9px, 2vw, 10px);
+    --font-size-sm: clamp(11px, 2.5vw, 12px);
+    --font-size-base: clamp(13px, 3vw, 14px);
+    --font-size-lg: clamp(14px, 3.5vw, 16px);
+    --font-size-xl: clamp(16px, 4vw, 18px);
+    --font-size-2xl: clamp(20px, 5vw, 24px);
+    --font-size-3xl: clamp(24px, 6vw, 32px);
+    
+    /* Адаптированный spacing */
+    --grid-unit: 16px;
+    --sidebar-width: 0px; /* Sidebar скрыт на mobile */
+    --topbar-height: 56px;
+  }
+  
+  /* Скрыть sidebar на mobile */
+  .sidebar {
+    display: none;
+  }
+  
+  /* Показать hamburger меню */
+  .hamburger-menu {
+    display: flex;
+  }
+  
+  /* Адаптировать grid layout - 1 колонка */
+  .grid-layout,
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--grid-unit);
+  }
+  
+  /* Адаптировать main content для mobile */
+  .main-content {
+    margin-left: 0;
+    padding: var(--grid-unit);
+  }
+  
+  /* Адаптировать glass cards для mobile */
+  .glass-card {
+    padding: calc(var(--grid-unit) * 1.5);
+  }
+  
+  /* Уменьшить blur для производительности на mobile */
+  :root {
+    --glass-blur: 6px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - TABLET STYLES
+   ============================================ */
+
+/* Tablet breakpoint: 768px - 1024px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    /* Адаптированные размеры для tablet */
+    --sidebar-width: 240px;
+    --grid-unit: 20px;
+    
+    /* Адаптированные размеры шрифтов */
+    --font-size-xs: 10px;
+    --font-size-sm: 12px;
+    --font-size-base: 14px;
+    --font-size-lg: 15px;
+    --font-size-xl: 17px;
+    --font-size-2xl: 22px;
+    --font-size-3xl: 28px;
+  }
+  
+  /* Адаптировать grid layout - 2 колонки */
+  .grid-layout,
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--grid-unit);
+  }
+  
+  /* Адаптировать sidebar width */
+  .sidebar {
+    width: var(--sidebar-width);
+  }
+  
+  /* Адаптировать main content */
+  .main-content {
+    margin-left: var(--sidebar-width);
+    padding: calc(var(--grid-unit) * 1.5);
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - DESKTOP STYLES
+   ============================================ */
+
+/* Desktop breakpoint: >= 1024px */
+@media (min-width: 1024px) {
+  /* Hamburger menu скрыт на desktop */
+  .hamburger-menu {
+    display: none;
+  }
+  
+  /* Grid layout с auto-fit для адаптивности */
+  .grid-layout,
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--grid-unit);
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Скрыть элементы на определенных breakpoints */
+.mobile-only {
+  display: none;
+}
+
+.tablet-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .mobile-only {
+    display: block;
+  }
+  
+  .tablet-only,
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tablet-only {
+    display: block;
+  }
+  
+  .mobile-only,
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktop-only {
+    display: block;
+  }
+  
+  .mobile-only,
+  .tablet-only {
+    display: none;
+  }
+}
