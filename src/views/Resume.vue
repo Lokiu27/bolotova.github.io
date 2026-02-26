@@ -101,6 +101,12 @@ onMounted(() => {
   min-height: 100vh;
   padding: 2rem;
   background: var(--bg-void, #000);
+  /* Grid background pattern 40x40px */
+  background-image: 
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 0;
 }
 
 .resume-container {

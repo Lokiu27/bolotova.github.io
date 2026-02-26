@@ -28,7 +28,7 @@ export const ContactsDataSchema = z.object({
   email: z.string().email('Invalid email format'),
   telegram: z.string().min(1, 'Telegram is required'),
   github: z.string().min(1, 'GitHub is required'),
-  resume: z.string().min(1, 'Resume is required')
+  resume: z.string().optional()
 })
 
 // Export validation functions

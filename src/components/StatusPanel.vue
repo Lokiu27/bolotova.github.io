@@ -51,9 +51,10 @@ const shouldPulse = computed(() => {
 .status-panel {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-secondary);

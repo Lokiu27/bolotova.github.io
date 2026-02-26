@@ -10,23 +10,23 @@
           />
         </div>
         <div class="role-badge">{{ profileData?.role || 'Team Formation Expert' }}</div>
-        <h1 class="profile-title glitch-hover">{{ profileData?.title?.trim() }}</h1>
-        <p class="profile-subtitle glitch-hover">{{ profileData?.subtitle?.trim() }}</p>
+        <h1 class="profile-title glitch-hover">{{ profileData?.title?.trim() }}<br>{{ profileData?.subtitle?.trim() }}</h1>
         <p class="profile-description">{{ profileData?.description?.trim() }}</p>
       </header>
       
       <nav class="navigation-section" role="navigation" aria-label="Main navigation">
+        <div class="navigation-header">// NAVIGATION</div>
         <router-link to="/" class="nav-link" exact-active-class="active" aria-label="Navigate to home page">
           <span class="nav-arrow" aria-hidden="true">></span>
-          <span class="nav-text">Главная</span>
+          <span class="nav-text">/ ГЛАВНАЯ</span>
         </router-link>
         <router-link to="/projects" class="nav-link" active-class="active" aria-label="Navigate to projects page">
           <span class="nav-arrow" aria-hidden="true">></span>
-          <span class="nav-text">Проекты</span>
+          <span class="nav-text">/ ПРОЕКТЫ</span>
         </router-link>
         <router-link to="/resume" class="nav-link" active-class="active" aria-label="Navigate to resume page">
           <span class="nav-arrow" aria-hidden="true">></span>
-          <span class="nav-text">Резюме</span>
+          <span class="nav-text">/ РЕЗЮМЕ</span>
         </router-link>
       </nav>
       
@@ -108,28 +108,15 @@ defineProps<Props>()
   text-align: center;
   flex-shrink: 0;
   margin-bottom: var(--grid-unit);
+  padding: 40px 24px;
 }
 
 /* Cyber-style profile image container with rotating frame */
 .profile-img-container {
   position: relative;
-  width: 160px;
-  height: 160px;
+  width: 140px;
+  height: 140px;
   margin-bottom: calc(var(--grid-unit) * 0.75);
-}
-
-.profile-img-container::before {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border-radius: 50%;
-  border: 2px solid var(--accent-cyan);
-  animation: spin 8s linear infinite;
-  opacity: 0.6;
-  will-change: transform;
 }
 
 .profile-img-container::after {
@@ -140,31 +127,36 @@ defineProps<Props>()
   right: -8px;
   bottom: -8px;
   border-radius: 50%;
-  border: 1px solid var(--accent-cyan);
+  border: 1px solid var(--text-tertiary);
   border-style: dashed;
-  animation: spin 12s linear infinite reverse;
+  animation: spin 20s linear infinite;
   opacity: 0.3;
   will-change: transform;
 }
 
 .profile-image {
-  width: 160px;
-  height: 160px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   object-fit: cover;
   object-position: 50% 0%;
-  border: 4px solid var(--accent-cyan);
+  border: 2px solid var(--accent-cyan);
   position: relative;
   z-index: 1;
-  box-shadow: 0 0 20px var(--accent-cyan-glow);
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.profile-image:hover {
+  filter: grayscale(0%);
 }
 
 .role-badge {
   display: inline-block;
   font-size: 10px;
-  padding: 4px 12px;
+  padding: 4px 8px;
   border: 1px solid var(--accent-cyan);
-  background: transparent;
+  background: var(--accent-cyan-dim);
   color: var(--accent-cyan);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -174,44 +166,13 @@ defineProps<Props>()
 
 .profile-title {
   font-family: var(--font-mono);
-  font-size: var(--font-size-xl);
+  font-size: 18px;
   font-weight: 700;
-  margin-bottom: calc(var(--grid-unit) * 0.25);
+  margin-bottom: calc(var(--grid-unit) * 0.75);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   line-height: 1.2;
   color: var(--text-primary);
-}
-
-.profile-subtitle {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--accent-cyan);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-  position: relative;
-  padding-bottom: calc(var(--grid-unit) * 0.5);
-  margin-bottom: calc(var(--grid-unit) * 0.75);
-  text-shadow: 0 0 10px var(--accent-cyan-glow);
-}
-
-.profile-subtitle::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--accent-cyan),
-    transparent
-  );
-  box-shadow: 0 0 8px var(--accent-cyan-glow);
 }
 
 .profile-description {
@@ -229,7 +190,16 @@ defineProps<Props>()
   margin: calc(var(--grid-unit) * 0.75) 0;
   display: flex;
   flex-direction: column;
-  gap: calc(var(--grid-unit) * 0.5);
+  gap: 16px;
+}
+
+.navigation-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
 }
 
 .nav-link {
@@ -240,13 +210,12 @@ defineProps<Props>()
   text-decoration: none;
   font-family: var(--font-mono);
   font-size: var(--font-size-base);
-  padding: calc(var(--grid-unit) * 0.5) calc(var(--grid-unit) * 0.75);
+  padding: 12px;
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border: 1px solid var(--border-dim);
   transition: all var(--transition-normal);
-  border-radius: var(--radius-sm);
   position: relative;
   overflow: hidden;
 }
@@ -283,8 +252,8 @@ defineProps<Props>()
 
 .nav-link.active {
   color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-  background-color: var(--accent-cyan-dim);
+  border-color: var(--border-dim);
+  background-color: var(--bg-active);
   box-shadow: 0 0 10px var(--accent-cyan-glow);
   text-shadow: 0 0 10px var(--accent-cyan-glow, rgba(0, 240, 255, 0.3));
 }
@@ -364,17 +333,16 @@ defineProps<Props>()
   }
   
   .profile-img-container {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
   }
   
   .profile-image {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
   }
   
-  .profile-title,
-  .profile-subtitle {
+  .profile-title {
     font-size: var(--font-size-lg);
   }
 }
@@ -389,17 +357,16 @@ defineProps<Props>()
   }
   
   .profile-img-container {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
   
   .profile-image {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
   
-  .profile-title,
-  .profile-subtitle {
+  .profile-title {
     font-size: var(--font-size-xl);
   }
   
@@ -415,24 +382,22 @@ defineProps<Props>()
   }
   
   .profile-img-container {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
   
   .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
   
-  .profile-title,
-  .profile-subtitle {
+  .profile-title {
     font-size: var(--font-size-lg);
   }
 }
 
 /* Уважение prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .profile-img-container::before,
   .profile-img-container::after {
     animation: none;
   }

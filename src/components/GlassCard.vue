@@ -172,6 +172,10 @@ const handleKeyboardActivation = () => {
 
 .glass-card-footer {
   margin-top: 16px;
+  padding: 20px 24px;
+  margin-left: calc(-1 * var(--glass-padding));
+  margin-right: calc(-1 * var(--glass-padding));
+  margin-bottom: calc(-1 * var(--glass-padding));
 }
 
 .glass-card-content {

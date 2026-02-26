@@ -1,13 +1,13 @@
 <template>
-  <div class="projects-view">
-    <section class="projects-section" aria-labelledby="projects-heading">
-      <!-- Hero section -->
-      <header class="hero-section">
-        <h2 id="projects-heading" class="tagline glitch-hover">Мои проекты</h2>
-        <p class="tagline-highlight">
-          Мои вайб-кодинг пет-проекты.
-        </p>
+  <main class="projects-page">
+    <article class="projects-container">
+      <header class="projects-header">
+        <h1 class="page-title">Мои проекты</h1>
       </header>
+      
+      <p class="page-description">
+        Мои вайб-кодинг пет-проекты.
+      </p>
       
       <!-- Projects grid with GlassCard -->
       <div class="projects-grid" role="list" aria-label="Projects">
@@ -23,8 +23,8 @@
           </p>
         </GlassCard>
       </div>
-    </section>
-  </div>
+    </article>
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -32,38 +32,61 @@ import GlassCard from '../components/GlassCard.vue'
 </script>
 
 <style scoped>
-.projects-view {
-  flex: 1;
+.projects-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: var(--bg-void, #000);
+  /* Grid background pattern 40x40px */
+  background-image: 
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 0;
 }
 
-.projects-section {
-  padding: 3rem;
+.projects-container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Hero section */
-.hero-section {
-  margin-bottom: 3rem;
-  text-align: left;
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-bright, rgba(0, 240, 255, 0.3));
+  position: relative;
 }
 
-.tagline {
-  font-size: var(--font-size-3xl, 32px);
+.projects-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: var(--accent-cyan, #00f0ff);
+  box-shadow: 0 0 10px var(--accent-cyan-glow, rgba(0, 240, 255, 0.5));
+}
+
+.page-title {
+  font-family: var(--font-mono, monospace);
+  font-size: 2.5rem;
   font-weight: 700;
+  color: var(--accent-cyan, #00f0ff);
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-  color: var(--text-primary, #e0e0e0);
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px var(--accent-cyan-glow, rgba(0, 240, 255, 0.3));
 }
 
-.tagline-highlight {
+.page-description {
   font-size: var(--font-size-lg, 16px);
   line-height: 1.8;
   color: var(--text-secondary, #858b99);
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  text-shadow: 0 0 10px var(--accent-cyan-glow, rgba(0, 240, 255, 0.3));
+  margin-bottom: 2rem;
 }
 
 /* Projects grid with auto-fit */
@@ -106,25 +129,20 @@ import GlassCard from '../components/GlassCard.vue'
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
 }
 
-/* Tablet styles */
-@media (max-width: 1024px) {
-  .projects-section {
-    padding: 2rem;
-  }
-  
-  .projects-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-}
-
-/* Mobile styles */
+/* Responsive design */
 @media (max-width: 768px) {
-  .projects-section {
-    padding: 1.5rem;
+  .projects-page {
+    padding: 1rem;
   }
   
-  .tagline {
-    font-size: var(--font-size-2xl, 24px);
+  .projects-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
   }
   
   .projects-grid {
@@ -133,14 +151,25 @@ import GlassCard from '../components/GlassCard.vue'
   }
 }
 
-/* Small mobile styles */
-@media (max-width: 480px) {
-  .projects-section {
-    padding: 1rem;
+/* Tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .projects-page {
+    padding: 1.5rem;
   }
   
-  .tagline {
-    font-size: var(--font-size-xl, 18px);
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+/* Small mobile styles */
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.5rem;
   }
 }
 </style>
