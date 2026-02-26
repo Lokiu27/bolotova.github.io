@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, provide } from 'vue'
 import Sidebar from './components/Sidebar.vue'
+import MobileHeader from './components/MobileHeader.vue'
 import Footer from './components/Footer.vue'
 import WebGLBackground from './components/WebGLBackground.vue'
 import ScanlineOverlay from './components/ScanlineOverlay.vue'
@@ -83,6 +84,8 @@ onMounted(() => {
     </div>
     
     <div v-show="!loading && !error" class="app-layout">
+      <MobileHeader class="mobile-header" />
+      
       <Sidebar 
         :profile-data="heroData" 
         :contact-data="contactsData"
@@ -169,6 +172,10 @@ onMounted(() => {
   overflow-y: auto;
 }
 
+.mobile-header {
+  display: none;
+}
+
 .app-main {
   margin-left: var(--sidebar-width);
   min-height: 100vh;
@@ -195,20 +202,23 @@ onMounted(() => {
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .app-layout {
     display: flex;
     flex-direction: column;
   }
   
   .app-sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
+    display: none;
+  }
+  
+  .mobile-header {
+    display: block;
   }
   
   .app-main {
     margin-left: 0;
+    padding-top: var(--topbar-height);
   }
 }
 

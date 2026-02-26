@@ -114,11 +114,6 @@ select:focus-visible,
     --topbar-height: 56px;
   }
   
-  /* Скрыть sidebar на mobile */
-  .sidebar {
-    display: none;
-  }
-  
   /* Показать hamburger меню */
   .hamburger-menu {
     display: flex;
