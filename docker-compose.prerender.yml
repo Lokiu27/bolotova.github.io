@@ -1,6 +1,8 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.prerender
     container_name: portfolio-web
     ports:
       - "8081:80"   # HTTP для локальных проверок
