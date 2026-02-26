@@ -1,11 +1,17 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { viteSitemapPlugin } from './scripts/vite-plugin-sitemap'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    viteSitemapPlugin('https://bolotova.site', [
+      { path: '/', changefreq: 'weekly', priority: 1.0 },
+      { path: '/projects', changefreq: 'monthly', priority: 0.8 },
+      { path: '/resume', changefreq: 'monthly', priority: 0.8 }
+    ])
   ],
   server: {
     hmr: {

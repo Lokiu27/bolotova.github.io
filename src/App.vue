@@ -9,6 +9,8 @@ import type { HeroData, AboutData, ContactsData } from './types'
 import { heroDataKey, aboutDataKey, contactsDataKey } from './types/injection-keys'
 import { validateHeroData, validateAboutData, validateContactsData } from './schemas/data-schemas'
 import { ZodError } from 'zod'
+import { useSchemaOrg } from './composables/useSchemaOrg'
+import { BASE_URL } from './config/seo'
 
 const heroData = ref<HeroData>()
 const aboutData = ref<AboutData>()
@@ -42,6 +44,32 @@ const loadData = async () => {
     heroData.value = validateHeroData(heroJson)
     aboutData.value = validateAboutData(aboutJson)
     contactsData.value = validateContactsData(contactsJson)
+
+    // Inject Schema.org structured data after loading JSON data
+    const { injectSchemas } = useSchemaOrg()
+    injectSchemas({
+      person: {
+        name: 'Болотова Ксения',
+        jobTitle: heroData.value.subtitle,
+        description: heroData.value.description,
+        email: contactsData.value.email,
+        url: BASE_URL,
+        sameAs: [
+          contactsData.value.telegram,
+          contactsData.value.github
+        ]
+      },
+      website: {
+        name: 'Болотова Ксения — Персональный сайт',
+        url: BASE_URL
+      },
+      professionalService: {
+        name: 'Консультации по бизнес-анализу и AI инструментам',
+        description: aboutData.value.title,
+        url: BASE_URL,
+        serviceTypes: aboutData.value.features.map(f => f.title)
+      }
+    })
   } catch (err) {
     if (err instanceof ZodError) {
       // Handle validation errors with user-friendly messages
