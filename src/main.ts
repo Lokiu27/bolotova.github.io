@@ -6,6 +6,8 @@ import './assets/styles/animations.css'
 import './assets/styles/glassmorphism.css'
 import './assets/css/main.css'
 import { performanceMonitor } from './utils/performance'
+import { useSeoMeta } from './composables/useSeoMeta'
+import { BASE_URL, routeSeoConfig } from './config/seo'
 
 // Import views
 import Home from './views/Home.vue'
@@ -44,6 +46,29 @@ const router = createRouter({
     } else {
       return { top: 0 }
     }
+  }
+})
+
+// SEO meta tags management via router.afterEach hook
+router.afterEach((to) => {
+  const seoConfig = routeSeoConfig[to.path]
+  if (seoConfig) {
+    const { setMeta } = useSeoMeta()
+    setMeta({
+      title: seoConfig.title,
+      description: seoConfig.description,
+      ogTitle: seoConfig.title,
+      ogDescription: seoConfig.description,
+      ogType: seoConfig.ogType,
+      ogUrl: `${BASE_URL}${to.path}`,
+      ogImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
+      ogLocale: 'ru_RU',
+      twitterCard: 'summary',
+      twitterTitle: seoConfig.title,
+      twitterDescription: seoConfig.description,
+      twitterImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
+      canonicalUrl: `${BASE_URL}${to.path}`
+    })
   }
 })
 
