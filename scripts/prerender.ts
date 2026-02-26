@@ -144,6 +144,13 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
 
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
+  // Skip prerendering in Docker/CI environments where Chrome is not available
+  if (process.env.DOCKER_BUILD === 'true' || process.env.CI === 'true') {
+    console.log('⏭️  Skipping prerendering in Docker/CI environment')
+    console.log('   (Prerendering requires Chrome which is not available in Alpine Linux)')
+    process.exit(0)
+  }
+  
   const config: PrerenderConfig = {
     routes: ['/', '/projects', '/resume'],
     distDir: resolve(process.cwd(), 'dist'),

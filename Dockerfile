@@ -9,6 +9,8 @@ RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the sources and build
 COPY . .
+# Set environment variable to skip prerendering in Docker
+ENV DOCKER_BUILD=true
 RUN npm run build
 
 # Stage 2: nginx serving built static files
