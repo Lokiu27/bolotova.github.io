@@ -31,6 +31,14 @@ const router = createRouter({
       component: Services
     },
     {
+      path: '/projects/mini-llm',
+      name: 'MiniLlm',
+      component: () => import('./views/MiniLlmView.vue'),
+      meta: {
+        title: 'Мини LLM в браузере'
+      }
+    },
+    {
       path: '/resume',
       name: 'Resume',
       component: Resume,

@@ -11,23 +11,30 @@
       
       <!-- Projects grid with GlassCard -->
       <div class="projects-grid" role="list" aria-label="Projects">
-        <GlassCard 
-          class="project-card"
-          :padding="'24px'"
-          role="listitem"
+        <RouterLink 
+          to="/projects/mini-llm" 
+          class="project-link"
+          aria-label="Открыть проект Мини LLM в браузере"
         >
-          <div class="card-index" aria-hidden="true">01</div>
-          <h3 class="project-title glitch-hover">Мини llm в браузере</h3>
-          <p class="project-description">
-            Не знаю, еще не придумала.
-          </p>
-        </GlassCard>
+          <GlassCard 
+            class="project-card"
+            :padding="'24px'"
+            role="listitem"
+          >
+            <div class="card-index" aria-hidden="true">01</div>
+            <h3 class="project-title glitch-hover">Мини LLM в браузере</h3>
+            <p class="project-description">
+              Генерация JSON Schema с использованием языковой модели Phi-3-mini, работающей полностью в браузере.
+            </p>
+          </GlassCard>
+        </RouterLink>
       </div>
     </article>
   </main>
 </template>
 
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import GlassCard from '../components/GlassCard.vue'
 </script>
 
@@ -98,6 +105,31 @@ import GlassCard from '../components/GlassCard.vue'
 
 .project-card {
   position: relative;
+}
+
+/* Project link styling */
+.project-link {
+  text-decoration: none;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.project-link:hover {
+  transform: translateY(-4px);
+}
+
+.project-link:hover .project-card {
+  border-color: var(--accent-cyan, #00f0ff);
+  box-shadow: 0 0 20px var(--accent-cyan-glow, rgba(0, 240, 255, 0.3));
+}
+
+.project-link:focus {
+  outline: none;
+}
+
+.project-link:focus-visible .project-card {
+  outline: 2px solid var(--accent-cyan, #00f0ff);
+  outline-offset: 4px;
 }
 
 /* Card index - cyberpunk style */
