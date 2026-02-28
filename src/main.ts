@@ -31,6 +31,14 @@ const router = createRouter({
       component: Services
     },
     {
+      path: '/projects/mini-llm',
+      name: 'MiniLlm',
+      component: () => import('./views/MiniLlmView.vue'),
+      meta: {
+        title: 'Мини LLM в браузере'
+      }
+    },
+    {
       path: '/resume',
       name: 'Resume',
       component: Resume,
@@ -63,7 +71,7 @@ router.afterEach((to) => {
       ogUrl: `${BASE_URL}${to.path}`,
       ogImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
       ogLocale: 'ru_RU',
-      twitterCard: 'summary',
+      twitterCard: 'summary_large_image',
       twitterTitle: seoConfig.title,
       twitterDescription: seoConfig.description,
       twitterImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
