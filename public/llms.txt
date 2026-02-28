@@ -5,5 +5,6 @@
 ## Страницы
 
 - [Главная](https://bolotova.site/): О специалисте, миссия, ключевые компетенции
-- [Проекты](https://bolotova.site/projects): Пет-проекты в области AI
+- [Проекты](https://bolotova.site/projects): Вайб-кодинг пет-проекты в области AI
+- [Мини LLM в браузере](https://bolotova.site/projects/mini-llm): Генерация JSON Schema с помощью Phi-3-mini, работающей локально в браузере
 - [Резюме](https://bolotova.site/resume): Профессиональное резюме с возможностью скачивания PDF

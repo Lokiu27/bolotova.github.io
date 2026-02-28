@@ -71,7 +71,7 @@ router.afterEach((to) => {
       ogUrl: `${BASE_URL}${to.path}`,
       ogImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
       ogLocale: 'ru_RU',
-      twitterCard: 'summary',
+      twitterCard: 'summary_large_image',
       twitterTitle: seoConfig.title,
       twitterDescription: seoConfig.description,
       twitterImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
