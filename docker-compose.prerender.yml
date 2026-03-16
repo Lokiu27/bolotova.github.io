@@ -9,4 +9,7 @@ services:
       - "443:443"   # HTTPS от Cloudflare к Nginx (Origin Certificate)
     restart: unless-stopped
     volumes:
-      - /etc/nginx/ssl:/etc/nginx/ssl:ro  # примонтировать Origin Certificate с хоста
+      # Монтируем Let's Encrypt сертификаты
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Для обновления сертификата
+      - /var/www/certbot:/var/www/certbot:ro
