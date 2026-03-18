@@ -5,9 +5,9 @@ import MobileHeader from './components/MobileHeader.vue'
 import Footer from './components/Footer.vue'
 import WebGLBackground from './components/WebGLBackground.vue'
 import ScanlineOverlay from './components/ScanlineOverlay.vue'
-import type { HeroData, AboutData, ContactsData } from './types'
+import type { HeroData, AboutData, ContactsData, HomepageBlocksData } from './types'
 import { heroDataKey, aboutDataKey, contactsDataKey } from './types/injection-keys'
-import { validateHeroData, validateAboutData, validateContactsData } from './schemas/data-schemas'
+import { validateHeroData, validateAboutData, validateContactsData, validateHomepageBlocksData } from './schemas/data-schemas'
 import { ZodError } from 'zod'
 import { useSchemaOrg } from './composables/useSchemaOrg'
 import { BASE_URL } from './config/seo'
@@ -15,6 +15,7 @@ import { BASE_URL } from './config/seo'
 const heroData = ref<HeroData>()
 const aboutData = ref<AboutData>()
 const contactsData = ref<ContactsData>()
+const homepageBlocksData = ref<HomepageBlocksData>()
 const loading = ref(true)
 const error = ref<string>()
 
@@ -85,6 +86,17 @@ const loadData = async () => {
   } finally {
     loading.value = false
   }
+
+  // Load homepage blocks separately — failure does not block main content
+  try {
+    const blocksResponse = await fetch('/data/homepage-blocks.json')
+    if (blocksResponse.ok) {
+      const blocksJson = await blocksResponse.json()
+      homepageBlocksData.value = validateHomepageBlocksData(blocksJson)
+    }
+  } catch (err) {
+    console.warn('Failed to load homepage blocks data:', err)
+  }
 }
 
 onMounted(() => {
@@ -128,6 +140,7 @@ onMounted(() => {
               :hero-data="heroData"
               :about-data="aboutData"
               :contact-data="contactsData"
+              :homepage-blocks-data="homepageBlocksData"
             />
           </transition>
         </router-view>

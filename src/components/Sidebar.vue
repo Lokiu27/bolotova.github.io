@@ -9,7 +9,7 @@
             class="profile-image critical-image"
           />
         </div>
-        <div class="role-badge">{{ profileData?.role || 'Team Formation Expert' }}</div>
+        <div class="role-badge">{{ profileData?.role || 'CONSULTING / BUSINESS ANALYSIS & AI' }}</div>
         <h1 class="profile-title glitch-hover">{{ profileData?.title?.trim() }}<br>{{ profileData?.subtitle?.trim() }}</h1>
         <p class="profile-description">{{ profileData?.description?.trim() }}</p>
       </header>
@@ -22,7 +22,7 @@
         </router-link>
         <router-link to="/projects" class="nav-link" active-class="active" aria-label="Navigate to projects page">
           <span class="nav-arrow" aria-hidden="true">></span>
-          <span class="nav-text">/ ПРОЕКТЫ</span>
+          <span class="nav-text">/ PET-ПРОЕКТЫ</span>
         </router-link>
         <router-link to="/resume" class="nav-link" active-class="active" aria-label="Navigate to resume page">
           <span class="nav-arrow" aria-hidden="true">></span>

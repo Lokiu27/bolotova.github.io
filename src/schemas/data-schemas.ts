@@ -31,7 +31,57 @@ export const ContactsDataSchema = z.object({
   resume: z.string().optional()
 })
 
+// Zod schemas for HomepageBlocks
+const ChallengesSchema = z.object({
+  label: z.string().min(1),
+  title: z.string().min(1),
+  intro: z.string().optional(),
+  items: z.array(z.string().min(1)).min(1)
+})
+
+const ApproachSchema = z.object({
+  label: z.string().min(1),
+  title: z.string().optional(),
+  intro: z.string().optional(),
+  items: z.array(z.string().min(1)).min(1),
+  goal: z.string().min(1)
+})
+
+const FormatItemSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1)
+})
+
+const FormatsSchema = z.object({
+  label: z.string().min(1),
+  title: z.string().optional(),
+  items: z.array(FormatItemSchema).min(1)
+})
+
+const AboutMeSchema = z.object({
+  label: z.string().min(1),
+  role: z.string().min(1),
+  specializations: z.array(z.string().min(1)).min(1),
+  summary: z.string().min(1)
+})
+
+const CtaSchema = z.object({
+  label: z.string().min(1),
+  situations: z.string().min(1),
+  callToAction: z.string().min(1),
+  buttonText: z.string().min(1)
+})
+
+export const HomepageBlocksSchema = z.object({
+  challenges: ChallengesSchema.optional(),
+  approach: ApproachSchema.optional(),
+  formats: FormatsSchema.optional(),
+  aboutMe: AboutMeSchema.optional(),
+  cta: CtaSchema.optional()
+})
+
 // Export validation functions
 export const validateHeroData = (data: unknown) => HeroDataSchema.parse(data)
 export const validateAboutData = (data: unknown) => AboutDataSchema.parse(data)
 export const validateContactsData = (data: unknown) => ContactsDataSchema.parse(data)
+export const validateHomepageBlocksData = (data: unknown) => HomepageBlocksSchema.parse(data)

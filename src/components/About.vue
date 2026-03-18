@@ -57,14 +57,30 @@
         </article>
       </div>
     </section>
+
+    <!-- Homepage content blocks -->
+    <div class="content-blocks">
+      <ChallengesBlock v-if="homepageBlocksData?.challenges" :data="homepageBlocksData.challenges" />
+      <ApproachBlock v-if="homepageBlocksData?.approach" :data="homepageBlocksData.approach" />
+      <FormatsBlock v-if="homepageBlocksData?.formats" :data="homepageBlocksData.formats" />
+      <AboutMeBlock v-if="homepageBlocksData?.aboutMe" :data="homepageBlocksData.aboutMe" />
+      <CtaBlock v-if="homepageBlocksData?.cta" :data="homepageBlocksData.cta" :telegram-url="telegramUrl ?? ''" />
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import type { AboutData } from '../types'
+import type { AboutData, HomepageBlocksData } from '../types'
+import ChallengesBlock from './ChallengesBlock.vue'
+import ApproachBlock from './ApproachBlock.vue'
+import FormatsBlock from './FormatsBlock.vue'
+import AboutMeBlock from './AboutMeBlock.vue'
+import CtaBlock from './CtaBlock.vue'
 
 interface Props {
   aboutData?: AboutData
+  homepageBlocksData?: HomepageBlocksData
+  telegramUrl?: string
 }
 
 defineProps<Props>()
@@ -297,5 +313,12 @@ defineProps<Props>()
   .card-index {
     font-size: 24px;
   }
+}
+
+.content-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-unit, 24px);
+  margin-top: var(--grid-unit, 24px);
 }
 </style>
