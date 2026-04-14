@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY docs/mkdocs.yml ./mkdocs.yml
 
-ARG CONTENT_REPO_URL=https://github.com/Lokiu27/course-content.git
+ARG CONTENT_REPO_URL=https://github.com/Lokiu27/BA_Course.git
 ARG CONTENT_REPO_REF=main
 RUN apk add --no-cache git \
     && git clone --depth 1 --branch ${CONTENT_REPO_REF} ${CONTENT_REPO_URL} content \
