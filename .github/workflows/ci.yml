@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  repository_dispatch:
+    types: [ content-updated ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -28,7 +33,7 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
 
     steps:

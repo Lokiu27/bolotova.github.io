@@ -1,0 +1,21 @@
+# В Репозитории_контента: .github/workflows/trigger-build.yml
+name: Trigger docs rebuild
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rebuild in main repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DISPATCH_PAT }}  # PAT с правом repo на Основной_репозиторий
+          repository: Lokiu27/bolotova.github.io
+          event-type: content-updated
+          client-payload: '{"ref": "${{ github.sha }}", "triggered_by": "content-repo"}'
