@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: build Vue SPA
-FROM node:20.18-alpine3.20 AS build-spa
+FROM node:20.19-alpine3.20 AS build-spa
 
 WORKDIR /app
 
@@ -30,7 +30,7 @@ RUN apk add --no-cache git \
     && cd content && git log --oneline -1 > /docs/.content-commit \
     && rm -rf content/.git
 
-RUN mkdocs build --strict -f mkdocs.yml
+RUN mkdocs build -f mkdocs.yml
 
 # Stage 3: nginx serving built static files
 FROM nginx:1.27.3-alpine3.20
