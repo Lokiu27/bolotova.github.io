@@ -113,7 +113,8 @@ describe('Sidebar Component - Cyberpunk Redesign', () => {
   describe('Navigation Items with Hover Effects', () => {
     it('should render navigation links with arrow indicators', () => {
       const navLinks = wrapper.findAll('.nav-link')
-      expect(navLinks.length).toBe(2)
+      // 3 router-links (ГЛАВНАЯ, PET-ПРОЕКТЫ, РЕЗЮМЕ) + 1 plain <a> (КУРС)
+      expect(navLinks.length).toBe(4)
       
       navLinks.forEach(link => {
         const arrow = link.find('.nav-arrow')
@@ -127,10 +128,13 @@ describe('Sidebar Component - Cyberpunk Redesign', () => {
 
     it('should have correct navigation link structure', () => {
       const homeLink = wrapper.findAll('.nav-link')[0]
-      expect(homeLink.find('.nav-text').text()).toBe('Главная')
+      expect(homeLink.find('.nav-text').text()).toBe('/ ГЛАВНАЯ')
       
       const projectsLink = wrapper.findAll('.nav-link')[1]
-      expect(projectsLink.find('.nav-text').text()).toBe('Проекты')
+      expect(projectsLink.find('.nav-text').text()).toBe('/ PET-ПРОЕКТЫ')
+      
+      const courseLink = wrapper.findAll('.nav-link')[3]
+      expect(courseLink.find('.nav-text').text()).toBe('/ КУРС')
     })
 
     it('should apply design tokens to nav links', () => {

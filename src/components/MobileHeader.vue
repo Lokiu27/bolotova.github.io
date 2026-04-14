@@ -50,6 +50,15 @@
           <span class="nav-arrow" aria-hidden="true">></span>
           <span class="nav-text">/ РЕЗЮМЕ</span>
         </router-link>
+        <a 
+          href="/course/" 
+          class="nav-link" 
+          aria-label="Перейти к курсу по бизнес-анализу с ИИ"
+          @click="closeMenu"
+        >
+          <span class="nav-arrow" aria-hidden="true">></span>
+          <span class="nav-text">/ КУРС</span>
+        </a>
       </div>
     </nav>
   </header>
