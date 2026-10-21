@@ -147,7 +147,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const config: PrerenderConfig = {
     routes: ['/', '/projects', '/resume'],
     distDir: resolve(process.cwd(), 'dist'),
-    baseUrl: 'https://bolotova.site',
+    baseUrl: 'https://bolotova.online',
     waitForSelector: '#app'
   }
   

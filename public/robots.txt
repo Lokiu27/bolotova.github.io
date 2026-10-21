@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bolotova.site/sitemap.xml
+Sitemap: https://bolotova.online/sitemap.xml

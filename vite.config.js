@@ -7,7 +7,7 @@ import { viteSitemapPlugin } from './scripts/vite-plugin-sitemap'
 export default defineConfig({
   plugins: [
     vue(),
-    viteSitemapPlugin('https://bolotova.site', [
+    viteSitemapPlugin('https://bolotova.online', [
       { path: '/', changefreq: 'weekly', priority: 1.0 },
       { path: '/projects', changefreq: 'monthly', priority: 0.8 },
       { path: '/resume', changefreq: 'monthly', priority: 0.8 }
