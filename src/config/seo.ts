@@ -67,7 +67,7 @@ export interface SitemapRoute {
 /**
  * Base URL of the website
  */
-export const BASE_URL = 'https://bolotova.site'
+export const BASE_URL = 'https://bolotova.online'
 
 /**
  * SEO configuration for each route

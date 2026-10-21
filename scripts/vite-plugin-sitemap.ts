@@ -10,7 +10,7 @@ interface SitemapRoute {
 
 /**
  * Vite plugin to generate sitemap.xml during build
- * @param baseUrl - Base URL of the site (e.g., 'https://bolotova.site')
+ * @param baseUrl - Base URL of the site (e.g., 'https://bolotova.online')
  * @param routes - Array of routes with SEO metadata
  * @returns Vite Plugin
  */
