@@ -14,12 +14,19 @@ COPY . .
 RUN npm run build
 
 # Stage 2: build MkDocs
-FROM python:3.12.8-alpine3.20 AS build-docs
+# slim (glibc), а не alpine (musl): у watchdog 6.0.0 нет musllinux-колёс,
+# на alpine pip собирает его из sdist, что на VPS занимает 10-20 минут
+FROM python:3.12.8-slim-bookworm AS build-docs
 
 WORKDIR /docs
 
 COPY docs/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# setuptools+wheel предустанавливаем и отключаем build-isolation:
+# иначе pip для каждого sdist (watchdog, jsmin) разворачивает изолированное
+# окружение с сетевой загрузкой build-deps, что на VPS занимает 10-20 минут
+# на пакет (run 39575250516: watchdog — 10 мин, jsmin — ещё 5+)
+RUN pip install --no-cache-dir setuptools wheel \
+    && pip install --no-cache-dir --no-build-isolation -r requirements.txt
 
 COPY docs/mkdocs.yml ./mkdocs.yml
 

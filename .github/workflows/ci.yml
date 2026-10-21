@@ -186,29 +186,50 @@ jobs:
             project_path=${{ steps.vps_config.outputs.project_path }}
             repo_url=https://github.com/Lokiu27/bolotova.github.io
 
+            # Сеть VPS↔GitHub деградирована: зависший перенос может висеть
+            # вечно. Гит должен рвать связь сам: <1КБ/с в течение 60с = аборт
+            export GIT_HTTP_LOW_SPEED_LIMIT=1024
+            export GIT_HTTP_LOW_SPEED_TIME=60
+            export GIT_HTTP_VERSION=HTTP/1.1
+
+            stamp() { echo "[$(date -u +%H:%M:%S)] $*"; }
+
             retry() {
               for attempt in 1 2 3; do
                 if "$@"; then
+                  stamp "готово (попытка $attempt)"
                   return 0
                 fi
-                echo "::warning::Попытка $attempt не удалась, повтор через 15с..."
+                stamp "попытка $attempt не удалась, повтор через 15с"
                 sleep 15
               done
               return 1
             }
 
             if [ -d "$project_path/.git" ]; then
-              echo "Найден существующий клон — обновляем вместо пересоздания"
+              stamp "обновляем существующий чекаут (fetch/reset)"
               git -C "$project_path" config http.version HTTP/1.1
-              retry git -C "$project_path" fetch origin main
+              retry git -C "$project_path" fetch --depth 1 origin main
               git -C "$project_path" reset --hard origin/main
               git -C "$project_path" clean -fd
             else
-              echo "Свежий клон"
+              stamp "свежий shallow-клон"
               rm -rf "$project_path"
-              retry git -c http.version=HTTP/1.1 clone "$repo_url" "$project_path"
+              ok=0
+              for attempt in 1 2 3; do
+                if git clone --depth 1 "$repo_url" "$project_path"; then
+                  ok=1
+                  stamp "клон готов (попытка $attempt)"
+                  break
+                fi
+                stamp "клон (попытка $attempt) не удался, чищу недоклон"
+                rm -rf "$project_path"
+                [ "$attempt" = "3" ] || sleep 15
+              done
+              [ "$ok" = "1" ] || { stamp "ОШИБКА: клон не удался за 3 попытки"; exit 1; }
             fi
 
+            stamp "docker compose build/up"
             cd "$project_path"
             docker compose up -d --build
 
