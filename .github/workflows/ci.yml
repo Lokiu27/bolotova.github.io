@@ -155,15 +155,48 @@ jobs:
         env:
           VPS_CONFIG: ${{ secrets.VPS_CONFIG }}
 
+      - name: Write VPS SSH key to file
+        run: |
+          echo "${{ steps.vps_config.outputs.ssh_key }}" > /tmp/vps_deploy_key
+          chmod 600 /tmp/vps_deploy_key
+
       - name: Deploy to VPS over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ steps.vps_config.outputs.host }}
           username: ${{ steps.vps_config.outputs.username }}
-          key: ${{ steps.vps_config.outputs.ssh_key }}
+          key_path: /tmp/vps_deploy_key
           port: ${{ steps.vps_config.outputs.port }}
+          # Сборка Docker-образа на VPS (npm ci + pip) может занимать больше 10 минут (дефолт)
+          command_timeout: 30m
           script: |
-            rm -rf ${{ steps.vps_config.outputs.project_path }}
-            git clone https://github.com/Lokiu27/bolotova.github.io ${{ steps.vps_config.outputs.project_path }}
-            cd ${{ steps.vps_config.outputs.project_path }}
+            set -e
+            cd ~
+            project_path=${{ steps.vps_config.outputs.project_path }}
+            repo_url=https://github.com/Lokiu27/bolotova.github.io
+
+            retry() {
+              for attempt in 1 2 3; do
+                if "$@"; then
+                  return 0
+                fi
+                echo "::warning::Попытка $attempt не удалась, повтор через 15с..."
+                sleep 15
+              done
+              return 1
+            }
+
+            if [ -d "$project_path/.git" ]; then
+              echo "Найден существующий клон — обновляем вместо пересоздания"
+              git -C "$project_path" config http.version HTTP/1.1
+              retry git -C "$project_path" fetch origin main
+              git -C "$project_path" reset --hard origin/main
+              git -C "$project_path" clean -fd
+            else
+              echo "Свежий клон"
+              rm -rf "$project_path"
+              retry git -c http.version=HTTP/1.1 clone "$repo_url" "$project_path"
+            fi
+
+            cd "$project_path"
             docker compose up -d --build
