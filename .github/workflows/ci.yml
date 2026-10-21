@@ -7,6 +7,9 @@ on:
     branches: [ main ]
   repository_dispatch:
     types: [ content-updated ]
+  # Ручной запуск деплоя (Actions → CI/CD → Run workflow).
+  # Деплой всегда выкачивает origin/main на VPS, поэтому безопасен с любой ветки.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -33,7 +36,7 @@ jobs:
 
   deploy:
     needs: build
-    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'repository_dispatch'
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -156,16 +159,24 @@ jobs:
           VPS_CONFIG: ${{ secrets.VPS_CONFIG }}
 
       - name: Write VPS SSH key to file
+        env:
+          VPS_KEY: ${{ steps.vps_config.outputs.ssh_key }}
         run: |
-          echo "${{ steps.vps_config.outputs.ssh_key }}" > /tmp/vps_deploy_key
-          chmod 600 /tmp/vps_deploy_key
+          # Пишем через env, а не через интерполяцию ${{ }}, иначе ключ попадёт
+          # в отображаемую команду шага (##[group]Run)
+          printf '%s\n' "$VPS_KEY" > /home/runner/work/_temp/vps_deploy_key
+          chmod 600 /home/runner/work/_temp/vps_deploy_key
 
       - name: Deploy to VPS over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ steps.vps_config.outputs.host }}
           username: ${{ steps.vps_config.outputs.username }}
-          key_path: /tmp/vps_deploy_key
+          # Экшен выполняется в контейнере: /home/runner/work/_temp на хосте
+          # смонтированы как /github/runner_temp внутри контейнера — ключ должен
+          # лежать по контейнерному пути, иначе файл не найдётся и аутентификация
+          # упадёт с "attempted methods [none]"
+          key_path: /github/runner_temp/vps_deploy_key
           port: ${{ steps.vps_config.outputs.port }}
           # Сборка Docker-образа на VPS (npm ci + pip) может занимать больше 10 минут (дефолт)
           command_timeout: 30m
@@ -200,3 +211,8 @@ jobs:
 
             cd "$project_path"
             docker compose up -d --build
+
+      # После деплоя удаляем ключ с диска раннера (и при успехе, и при ошибке)
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f /home/runner/work/_temp/vps_deploy_key
