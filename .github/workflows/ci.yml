@@ -162,8 +162,8 @@ jobs:
         env:
           VPS_KEY: ${{ steps.vps_config.outputs.ssh_key }}
         run: |
-          # Пишем через env, а не через интерполяцию ${{ }}, иначе ключ попадёт
-          # в отображаемую команду шага (##[group]Run)
+          # Пишем через env, а не через контекстные интерполяции, иначе ключ
+          # попадёт в отображаемую команду шага (группа Run в логах)
           printf '%s\n' "$VPS_KEY" > /home/runner/work/_temp/vps_deploy_key
           chmod 600 /home/runner/work/_temp/vps_deploy_key
 
