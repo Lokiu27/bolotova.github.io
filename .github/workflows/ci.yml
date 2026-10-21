@@ -8,7 +8,8 @@ on:
   repository_dispatch:
     types: [ content-updated ]
   # Ручной запуск деплоя (Actions → CI/CD → Run workflow).
-  # Деплой всегда выкачивает origin/main на VPS, поэтому безопасен с любой ветки.
+  # Код на VPS выкачивается с origin/main, статика — из артефакта текущего
+  # рана: при запуске не с main они могут различаться.
   workflow_dispatch:
 
 permissions:
@@ -33,6 +34,17 @@ jobs:
 
       - name: Build project
         run: npm run build
+
+      # Готовый SPA уезжает артефактом: на VPS больше ничего не собирается
+      # (npm ci и vite build на VPS подвешивали деплой — слабый CPU и
+      # деградированная сеть). Деплой просто копирует этот dist на сервер.
+      - name: Upload SPA bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: spa-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     needs: build
@@ -167,7 +179,13 @@ jobs:
           printf '%s\n' "$VPS_KEY" > /home/runner/work/_temp/vps_deploy_key
           chmod 600 /home/runner/work/_temp/vps_deploy_key
 
-      - name: Deploy to VPS over SSH
+      - name: Download SPA bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: spa-dist
+          path: dist
+
+      - name: Update code on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ steps.vps_config.outputs.host }}
@@ -178,8 +196,7 @@ jobs:
           # упадёт с "attempted methods [none]"
           key_path: /github/runner_temp/vps_deploy_key
           port: ${{ steps.vps_config.outputs.port }}
-          # Сборка Docker-образа на VPS (npm ci + pip) может занимать больше 10 минут (дефолт)
-          command_timeout: 30m
+          command_timeout: 10m
           script: |
             set -e
             cd ~
@@ -211,6 +228,7 @@ jobs:
               git -C "$project_path" config http.version HTTP/1.1
               retry git -C "$project_path" fetch --depth 1 origin main
               git -C "$project_path" reset --hard origin/main
+              # -fd, не -fdx: dist-prebuilt/ в .gitignore, вычищать его не надо
               git -C "$project_path" clean -fd
             else
               stamp "свежий shallow-клон"
@@ -228,10 +246,48 @@ jobs:
               done
               [ "$ok" = "1" ] || { stamp "ОШИБКА: клон не удался за 3 попытки"; exit 1; }
             fi
+            stamp "код на VPS: $(git -C "$project_path" rev-parse --short origin/main)"
 
-            stamp "docker compose build/up"
+      - name: Upload SPA bundle to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ steps.vps_config.outputs.host }}
+          username: ${{ steps.vps_config.outputs.username }}
+          # Тот же контейнерный путь для ключа, что и у ssh-action выше
+          key_path: /github/runner_temp/vps_deploy_key
+          port: ${{ steps.vps_config.outputs.port }}
+          source: "dist/*"
+          target: ${{ steps.vps_config.outputs.project_path }}/dist-prebuilt
+          strip_components: 1
+          # rm: заменяет каталог целиком — старые хэшированные ассеты
+          # не накапливаются между деплоями
+          rm: true
+          command_timeout: 20m
+
+      - name: Build and restart container on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ steps.vps_config.outputs.host }}
+          username: ${{ steps.vps_config.outputs.username }}
+          key_path: /github/runner_temp/vps_deploy_key
+          port: ${{ steps.vps_config.outputs.port }}
+          # Образ COPY-only (только COPY-слои), запас — на случай подтягивания
+          # базового nginx-образа
+          command_timeout: 15m
+          script: |
+            set -e
+            project_path=${{ steps.vps_config.outputs.project_path }}
+            stamp() { echo "[$(date -u +%H:%M:%S)] $*"; }
+
             cd "$project_path"
+            if [ ! -f dist-prebuilt/index.html ]; then
+              stamp "ОШИБКА: dist-prebuilt/index.html нет — бандл не доехал"
+              exit 1
+            fi
+            stamp "docker compose build/up (COPY-only, без npm/vite)"
             docker compose up -d --build
+            docker compose ps
+            docker image prune -f
 
       # После деплоя удаляем ключ с диска раннера (и при успехе, и при ошибке)
       - name: Cleanup SSH key
