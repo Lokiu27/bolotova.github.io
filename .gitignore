@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Готовый SPA-бандл, который CI заливает на VPS для COPY-only образа
+dist-prebuilt/
+
 # Logs
 *.log
 npm-debug.log*
