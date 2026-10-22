@@ -5,9 +5,15 @@
         <p class="copyright">
           Болотова Ксения Борисовна — физическое лицо, применяющее специальный налоговый режим «Налог на профессиональный доход».
 
+          ИНН 505202666269
+
           Место нахождения: Москва.
 
           По вопросам обработки персональных данных и прочим вопросам: k.bolotova@yandex.ru.
+
+          <RouterLink to="/privacy" class="footer-link">Политика обработки персональных данных</RouterLink>
+
+          <button type="button" class="footer-link cookie-settings" @click="reopenConsent">Настройки cookies</button>
 
           © {{ currentYear }} Болотова Ксения. Все права защищены.
         </p>
@@ -21,8 +27,23 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useCookieConsent } from '../composables/useCookieConsent'
+import { clearYandexMetricaCookies } from '../composables/useYandexMetrica'
 
 const currentYear = computed(() => new Date().getFullYear())
+const { consent, resetConsent } = useCookieConsent()
+
+// Отзыв согласия: сбросить решение и показать баннер снова.
+// Если Метрика уже была загружена, выгрузить её нельзя — перезагружаем
+// страницу, чтобы tag.js не продолжил работу
+const reopenConsent = (): void => {
+  const wasGranted = consent.value === 'granted'
+  resetConsent()
+  clearYandexMetricaCookies()
+  if (wasGranted) {
+    window.location.reload()
+  }
+}
 </script>
 
 <style scoped>
@@ -48,6 +69,25 @@ const currentYear = computed(() => new Date().getFullYear())
   color: var(--text-tertiary);
   font-family: var(--font-mono);
   margin: 0;
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--accent-cyan);
+}
+
+/* Кнопка «Настройки cookies» выглядит как ссылка футера */
+.cookie-settings {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
 }
 
 /* Tablet styles */

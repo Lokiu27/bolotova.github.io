@@ -10,7 +10,8 @@ export default defineConfig({
     viteSitemapPlugin('https://bolotova.online', [
       { path: '/', changefreq: 'weekly', priority: 1.0 },
       { path: '/projects', changefreq: 'monthly', priority: 0.8 },
-      { path: '/resume', changefreq: 'monthly', priority: 0.8 }
+      { path: '/resume', changefreq: 'monthly', priority: 0.8 },
+      { path: '/privacy', changefreq: 'monthly', priority: 0.3 }
     ])
   ],
   server: {

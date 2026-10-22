@@ -8,3 +8,4 @@
 - [Проекты](https://bolotova.online/projects): Вайб-кодинг пет-проекты в области AI
 - [Мини LLM в браузере](https://bolotova.online/projects/mini-llm): Генерация JSON Schema с помощью Phi-3-mini, работающей локально в браузере
 - [Резюме](https://bolotova.online/resume): Профессиональное резюме с возможностью скачивания PDF
+- [Политика обработки персональных данных](https://bolotova.online/privacy): Порядок обработки персональных данных (152-ФЗ), постоянная ссылка и скачивание PDF
