@@ -5,6 +5,8 @@ import MobileHeader from './components/MobileHeader.vue'
 import Footer from './components/Footer.vue'
 import WebGLBackground from './components/WebGLBackground.vue'
 import ScanlineOverlay from './components/ScanlineOverlay.vue'
+import CookieConsent from './components/CookieConsent.vue'
+import { useConsentGate } from './composables/useYandexMetrica'
 import type { HeroData, AboutData, ContactsData, HomepageBlocksData } from './types'
 import { heroDataKey, aboutDataKey, contactsDataKey } from './types/injection-keys'
 import { validateHeroData, validateAboutData, validateContactsData, validateHomepageBlocksData } from './schemas/data-schemas'
@@ -23,6 +25,9 @@ const error = ref<string>()
 provide(heroDataKey, heroData)
 provide(aboutDataKey, aboutData)
 provide(contactsDataKey, contactsData)
+
+// Загрузка Яндекс Метрики только после согласия на cookies (152-ФЗ)
+useConsentGate()
 
 const loadData = async () => {
   try {
@@ -114,6 +119,9 @@ onMounted(() => {
     
     <!-- Scanline Overlay Layer (z-index: 9999) -->
     <ScanlineOverlay :enabled="true" />
+
+    <!-- Cookie Consent Banner (z-index: 10001) -->
+    <CookieConsent />
     
     <div v-if="loading" class="loading" role="status" aria-live="polite">
       Загрузка...
