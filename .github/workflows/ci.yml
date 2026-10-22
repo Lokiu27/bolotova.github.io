@@ -29,15 +29,27 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
+      # Puppeteer качает Chromium (~170 МБ) при npm ci — кэшируем,
+      # чтобы не тратить 1-2 минуты на каждый ран
+      - name: Cache Puppeteer Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            puppeteer-${{ runner.os }}-
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build project
-        run: npm run build
+      # vite build + Puppeteer-пререндер: статический HTML с per-page
+      # мета-тегами, canonical и JSON-LD для каждого маршрута + 404.html
+      - name: Build project (vite build + prerender)
+        run: npm run build:prerender
 
-      # Готовый SPA уезжает артефактом: на VPS больше ничего не собирается
-      # (npm ci и vite build на VPS подвешивали деплой — слабый CPU и
-      # деградированная сеть). Деплой просто копирует этот dist на сервер.
+      # Готовый пререндеренный сайт уезжает артефактом: на VPS больше ничего
+      # не собирается (npm ci и vite build на VPS подвешивали деплой — слабый
+      # CPU и деградированная сеть). Деплой просто копирует этот dist на сервер.
       - name: Upload SPA bundle
         uses: actions/upload-artifact@v7
         with:

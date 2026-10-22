@@ -3,9 +3,12 @@ import { createServer } from 'http'
 import { createReadStream, existsSync, mkdirSync, writeFileSync, statSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { parse } from 'url'
+import { BASE_URL, routeSeoConfig } from '../src/config/seo'
 
 interface PrerenderConfig {
   routes: string[]
+  /** Любой несуществующий путь — рендерится catch-all NotFound → dist/404.html */
+  notFoundPath: string
   distDir: string
   baseUrl: string
   waitForSelector: string // '#app' or '[data-rendered]'
@@ -47,6 +50,10 @@ function startServer(distDir: string, port: number = 3000): { server: any; url: 
         res.setHeader('Content-Type', 'image/png')
       } else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
         res.setHeader('Content-Type', 'image/jpeg')
+      } else if (filePath.endsWith('.webp')) {
+        res.setHeader('Content-Type', 'image/webp')
+      } else if (filePath.endsWith('.woff2')) {
+        res.setHeader('Content-Type', 'font/woff2')
       }
       
       stream.pipe(res)
@@ -73,63 +80,87 @@ function startServer(distDir: string, port: number = 3000): { server: any; url: 
 }
 
 /**
+ * Output path in dist for a route ('/' → dist/index.html, '/projects' → dist/projects/index.html)
+ */
+function routeOutputPath(distDir: string, route: string): string {
+  if (route === '/') {
+    return resolve(distDir, 'index.html')
+  }
+  return resolve(distDir, route.slice(1), 'index.html')
+}
+
+/**
  * Prerender all routes using Puppeteer
  * @param config - Prerender configuration
  */
 export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
-  const { routes, distDir, waitForSelector } = config
-  
-  console.log(`\n🚀 Starting prerendering for ${routes.length} routes...\n`)
-  
+  const { routes, notFoundPath, distDir, waitForSelector } = config
+
+  console.log(`\n🚀 Starting prerendering for ${routes.length} routes + 404 page...\n`)
+
   // Start local HTTP server
   const { server, url } = startServer(distDir)
-  
+
   // Launch Puppeteer
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
-  
+
+  /**
+   * Render a single URL and save the captured DOM to outputPath
+   */
+  const renderAndSave = async (pageUrl: string, outputPath: string): Promise<void> => {
+    const page = await browser.newPage()
+
+    // Navigate to the route
+    await page.goto(pageUrl, {
+      waitUntil: 'networkidle0', // Wait for network to be idle
+      timeout: 30000
+    })
+
+    // Wait for the app to render
+    await page.waitForSelector(waitForSelector, { timeout: 10000 })
+
+    // Give Vue a bit more time to hydrate (и дождаться JS-инжекции
+    // мета-тегов, canonical и JSON-LD)
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Extract the full HTML
+    const html = await page.evaluate(() => document.documentElement.outerHTML)
+
+    mkdirSync(dirname(outputPath), { recursive: true })
+    writeFileSync(outputPath, html, 'utf-8')
+
+    console.log(`    ✓ Saved to: ${outputPath}`)
+
+    await page.close()
+  }
+
   try {
     for (const route of routes) {
-      const pageUrl = `${url}${route}`
       console.log(`  Rendering: ${route}`)
-      
-      const page = await browser.newPage()
-      
-      // Navigate to the route
-      await page.goto(pageUrl, {
-        waitUntil: 'networkidle0', // Wait for network to be idle
-        timeout: 30000
-      })
-      
-      // Wait for the app to render
-      await page.waitForSelector(waitForSelector, { timeout: 10000 })
-      
-      // Give Vue a bit more time to hydrate
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Extract the full HTML
-      const html = await page.evaluate(() => document.documentElement.outerHTML)
-      
-      // Determine output path
-      let outputPath: string
-      if (route === '/') {
-        outputPath = resolve(distDir, 'index.html')
-      } else {
-        const routeDir = resolve(distDir, route.slice(1))
-        mkdirSync(routeDir, { recursive: true })
-        outputPath = resolve(routeDir, 'index.html')
-      }
-      
-      // Save the HTML
-      writeFileSync(outputPath, html, 'utf-8')
-      
-      console.log(`    ✓ Saved to: ${outputPath}`)
-      
-      await page.close()
+      await renderAndSave(`${url}${route}`, routeOutputPath(distDir, route))
     }
-    
+
+    // 404: несуществующий путь попадает в catch-all маршрут NotFound,
+    // nginx потом отдаёт этот файл через error_page 404
+    console.log(`  Rendering: ${notFoundPath} (404 page)`)
+    await renderAndSave(`${url}${notFoundPath}`, resolve(distDir, '404.html'))
+
+    // Страховка: nginx отдаёт только реальные файлы (без SPA-fallback),
+    // поэтому отсутствие любого вывода уронило бы страницу в проде —
+    // падаем здесь, чтобы CI не задеплоил неполный бандл
+    const expectedFiles = [
+      ...routes.map(route => routeOutputPath(distDir, route)),
+      resolve(distDir, '404.html')
+    ]
+    for (const file of expectedFiles) {
+      if (!existsSync(file) || statSync(file).size === 0) {
+        throw new Error(`Prerender output missing or empty: ${file}`)
+      }
+    }
+
     console.log(`\n✅ Prerendering complete!\n`)
   } catch (error) {
     console.error('❌ Prerendering failed:', error)
@@ -145,12 +176,14 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const config: PrerenderConfig = {
-    routes: ['/', '/projects', '/resume', '/privacy'],
+    // Единый источник маршрутов — как у SEO-конфига и sitemap
+    routes: Object.keys(routeSeoConfig),
+    notFoundPath: '/not-found-prerender',
     distDir: resolve(process.cwd(), 'dist'),
-    baseUrl: 'https://bolotova.online',
+    baseUrl: BASE_URL,
     waitForSelector: '#app'
   }
-  
+
   prerenderRoutes(config).catch((error) => {
     console.error(error)
     process.exit(1)

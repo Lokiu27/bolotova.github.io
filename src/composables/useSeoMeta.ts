@@ -15,6 +15,8 @@ const MANAGED_META_ATTRIBUTE = 'data-managed-meta'
  */
 export interface UseSeoMeta {
   setMeta: (config: SeoMetaConfig) => void
+  setRobots: (content: string) => void
+  removeCanonicalLink: () => void
   removeMeta: () => void
 }
 
@@ -107,6 +109,18 @@ export function useSeoMeta(): UseSeoMeta {
     if (config.ogImage) {
       setMetaTag('property', 'og:image', config.ogImage)
     }
+    if (config.ogImageWidth !== undefined) {
+      setMetaTag('property', 'og:image:width', String(config.ogImageWidth))
+    }
+    if (config.ogImageHeight !== undefined) {
+      setMetaTag('property', 'og:image:height', String(config.ogImageHeight))
+    }
+    if (config.ogImageAlt) {
+      setMetaTag('property', 'og:image:alt', config.ogImageAlt)
+    }
+    if (config.ogSiteName) {
+      setMetaTag('property', 'og:site_name', config.ogSiteName)
+    }
     if (config.ogLocale) {
       setMetaTag('property', 'og:locale', config.ogLocale)
     }
@@ -129,6 +143,27 @@ export function useSeoMeta(): UseSeoMeta {
     if (config.canonicalUrl) {
       setCanonicalLink(config.canonicalUrl)
     }
+
+    // Robots directive (index/noindex per page)
+    if (config.robots) {
+      setRobots(config.robots)
+    }
+  }
+
+  /**
+   * Set or update the robots meta tag
+   */
+  const setRobots = (content: string): void => {
+    setMetaTag('name', 'robots', content)
+  }
+
+  /**
+   * Remove the canonical link (e.g. for the 404 page)
+   */
+  const removeCanonicalLink = (): void => {
+    document
+      .querySelectorAll('link[rel="canonical"]')
+      .forEach((element) => element.remove())
   }
 
   /**
@@ -143,6 +178,8 @@ export function useSeoMeta(): UseSeoMeta {
 
   return {
     setMeta,
+    setRobots,
+    removeCanonicalLink,
     removeMeta
   }
 }

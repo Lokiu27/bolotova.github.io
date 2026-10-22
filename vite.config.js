@@ -2,17 +2,14 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteSitemapPlugin } from './scripts/vite-plugin-sitemap'
+import { BASE_URL, sitemapRoutes } from './src/config/seo'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    viteSitemapPlugin('https://bolotova.online', [
-      { path: '/', changefreq: 'weekly', priority: 1.0 },
-      { path: '/projects', changefreq: 'monthly', priority: 0.8 },
-      { path: '/resume', changefreq: 'monthly', priority: 0.8 },
-      { path: '/privacy', changefreq: 'monthly', priority: 0.3 }
-    ])
+    // Единый источник маршрутов — src/config/seo.ts (он же кормит пререндер)
+    viteSitemapPlugin(BASE_URL, sitemapRoutes)
   ],
   server: {
     hmr: {

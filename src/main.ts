@@ -7,12 +7,13 @@ import './assets/styles/glassmorphism.css'
 import './assets/css/main.css'
 import { performanceMonitor } from './utils/performance'
 import { useSeoMeta } from './composables/useSeoMeta'
-import { BASE_URL, routeSeoConfig } from './config/seo'
+import { BASE_URL, OG_IMAGE, notFoundSeoConfig, routeSeoConfig } from './config/seo'
 
 // Import views
 import Home from './views/Home.vue'
 import Services from './views/Services.vue'
 import Resume from './views/Resume.vue'
+import NotFound from './views/NotFound.vue'
 
 // Start performance monitoring
 performanceMonitor.markLoadStart()
@@ -53,6 +54,12 @@ const router = createRouter({
       meta: {
         title: 'Резюме'
       }
+    },
+    {
+      // Catch-all: реальная 404-страница вместо пустого router-view
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFound
     }
   ],
   scrollBehavior(to, from, savedPosition) {
@@ -67,9 +74,24 @@ const router = createRouter({
 
 // SEO meta tags management via router.afterEach hook
 router.afterEach((to) => {
+  const { setMeta, setRobots, removeCanonicalLink } = useSeoMeta()
+
+  // 404: noindex, без canonical — пререндер пишет её в dist/404.html
+  if (to.name === 'NotFound') {
+    setMeta({
+      title: notFoundSeoConfig.title,
+      description: notFoundSeoConfig.description,
+      ogTitle: notFoundSeoConfig.title,
+      ogDescription: notFoundSeoConfig.description,
+      ogType: notFoundSeoConfig.ogType,
+      robots: 'noindex, follow'
+    })
+    removeCanonicalLink()
+    return
+  }
+
   const seoConfig = routeSeoConfig[to.path]
   if (seoConfig) {
-    const { setMeta } = useSeoMeta()
     setMeta({
       title: seoConfig.title,
       description: seoConfig.description,
@@ -77,13 +99,18 @@ router.afterEach((to) => {
       ogDescription: seoConfig.description,
       ogType: seoConfig.ogType,
       ogUrl: `${BASE_URL}${to.path}`,
-      ogImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
+      ogImage: `${BASE_URL}${OG_IMAGE.path}`,
+      ogImageWidth: OG_IMAGE.width,
+      ogImageHeight: OG_IMAGE.height,
+      ogImageAlt: OG_IMAGE.alt,
+      ogSiteName: 'Болотова Ксения',
       ogLocale: 'ru_RU',
       twitterCard: 'summary_large_image',
       twitterTitle: seoConfig.title,
       twitterDescription: seoConfig.description,
-      twitterImage: `${BASE_URL}/assets/images/profile-photo.jpg`,
-      canonicalUrl: `${BASE_URL}${to.path}`
+      twitterImage: `${BASE_URL}${OG_IMAGE.path}`,
+      canonicalUrl: `${BASE_URL}${to.path}`,
+      robots: 'index, follow'
     })
   }
 })
