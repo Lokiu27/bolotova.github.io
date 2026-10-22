@@ -145,7 +145,7 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const config: PrerenderConfig = {
-    routes: ['/', '/projects', '/resume'],
+    routes: ['/', '/projects', '/resume', '/privacy'],
     distDir: resolve(process.cwd(), 'dist'),
     baseUrl: 'https://bolotova.online',
     waitForSelector: '#app'

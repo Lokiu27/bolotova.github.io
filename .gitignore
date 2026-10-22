@@ -22,8 +22,8 @@ yarn-error.log*
 *~
 *.md
 
-# Exception: allow resume markdown file
-!src/data/*.md
+# Exception: allow content markdown files (resume, privacy policy)
+!public/data/*.md
 
 # macOS
 .DS_Store

@@ -5,9 +5,13 @@
         <p class="copyright">
           Болотова Ксения Борисовна — физическое лицо, применяющее специальный налоговый режим «Налог на профессиональный доход».
 
+          ИНН 505202666269
+
           Место нахождения: Москва.
 
           По вопросам обработки персональных данных и прочим вопросам: k.bolotova@yandex.ru.
+
+          <RouterLink to="/privacy" class="footer-link">Политика обработки персональных данных</RouterLink>
 
           © {{ currentYear }} Болотова Ксения. Все права защищены.
         </p>
@@ -48,6 +52,16 @@ const currentYear = computed(() => new Date().getFullYear())
   color: var(--text-tertiary);
   font-family: var(--font-mono);
   margin: 0;
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--accent-cyan);
 }
 
 /* Tablet styles */
