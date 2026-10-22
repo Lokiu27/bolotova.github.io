@@ -253,8 +253,10 @@ jobs:
         with:
           host: ${{ steps.vps_config.outputs.host }}
           username: ${{ steps.vps_config.outputs.username }}
-          # Тот же контейнерный путь для ключа, что и у ssh-action выше
-          key_path: /github/runner_temp/vps_deploy_key
+          # scp-action@v1.0.0 — composite-экшен: выполняется прямо на раннер-VM,
+          # а не в контейнере, поэтому контейнерного /github/runner_temp для него
+          # нет — ключ читается по хостовому пути (куда его и пишет шаг записи)
+          key_path: /home/runner/work/_temp/vps_deploy_key
           port: ${{ steps.vps_config.outputs.port }}
           source: "dist/*"
           target: ${{ steps.vps_config.outputs.project_path }}/dist-prebuilt
