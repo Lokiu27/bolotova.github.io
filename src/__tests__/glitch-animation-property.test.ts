@@ -44,11 +44,12 @@ describe('Property 5: Glitch Animation Application', () => {
             }
           })
 
-          // Main heading должен иметь класс glitch-hover (h2, так как h1 в Sidebar)
-          const h2 = wrapper.find('h2.tagline')
-          expect(h2.exists()).toBe(true)
-          expect(h2.classes()).toContain('glitch-hover')
-          
+          // Main heading должен иметь класс glitch-hover
+          // (h1: About — единственный носитель H1 на главной, Sidebar теперь p)
+          const h1 = wrapper.find('h1.tagline')
+          expect(h1.exists()).toBe(true)
+          expect(h1.classes()).toContain('glitch-hover')
+
           // Feature titles должны иметь класс glitch-hover
           const h3s = wrapper.findAll('h3.feature-title')
           expect(h3s.length).toBeGreaterThan(0)
@@ -124,15 +125,13 @@ describe('Property 5: Glitch Animation Application', () => {
             }
           })
 
-          // Profile title должен иметь класс glitch-hover
-          const h1 = wrapper.find('h1.profile-title')
-          expect(h1.exists()).toBe(true)
-          expect(h1.classes()).toContain('glitch-hover')
-          
-          // Profile subtitle должен иметь класс glitch-hover (это p элемент, не h2)
-          const subtitle = wrapper.find('p.profile-subtitle')
-          expect(subtitle.exists()).toBe(true)
-          expect(subtitle.classes()).toContain('glitch-hover')
+          // Profile title (имя и роль одним элементом) должен иметь glitch-hover
+          const title = wrapper.find('p.profile-title')
+          expect(title.exists()).toBe(true)
+          expect(title.classes()).toContain('glitch-hover')
+
+          // Отдельного элемента подзаголовка нет — роль выводится внутри title
+          expect(wrapper.find('.profile-subtitle').exists()).toBe(false)
         }
       ),
       { numRuns: 100 }
@@ -211,12 +210,12 @@ describe('Property 5: Glitch Animation Application', () => {
             attachTo: document.body
           })
 
-          const h2 = wrapper.find('h2.glitch-hover')
-          expect(h2.exists()).toBe(true)
-          
+          const h1 = wrapper.find('h1.glitch-hover')
+          expect(h1.exists()).toBe(true)
+
           // Проверяем, что элемент имеет класс glitch-hover
           // CSS правило .glitch-hover:hover должно применять анимацию
-          const element = h2.element as HTMLElement
+          const element = h1.element as HTMLElement
           expect(element.classList.contains('glitch-hover')).toBe(true)
           
           wrapper.unmount()
@@ -302,9 +301,10 @@ describe('Property 5: Glitch Animation Application', () => {
           expect(allHeadings.length).toBeGreaterThan(0)
           
           // Проверяем, что основные заголовки имеют glitch-hover
-          const h2 = wrapper.find('h2')
-          if (h2.exists()) {
-            expect(h2.classes()).toContain('glitch-hover')
+          // (h1 — заголовок About; визуально скрытые h2 (Features) его не несут)
+          const h1 = wrapper.find('h1')
+          if (h1.exists()) {
+            expect(h1.classes()).toContain('glitch-hover')
           }
           
           const h3s = wrapper.findAll('h3')
