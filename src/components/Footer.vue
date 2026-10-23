@@ -11,7 +11,7 @@
 
           По вопросам обработки персональных данных и прочим вопросам: k.bolotova@yandex.ru.
 
-          <RouterLink to="/privacy" class="footer-link">Политика обработки персональных данных</RouterLink>
+          <RouterLink to="/privacy" class="footer-link">Политика обработки персональных данных </RouterLink>
 
           <button type="button" class="footer-link cookie-settings" @click="reopenConsent">Настройки cookies</button>
 
