@@ -23,6 +23,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      # nginx-конфиг проверяется только при старте контейнера на VPS —
+      # битый конфиг уронил бы прод на деплое. Валидируем заранее в том же
+      # образе, что в Dockerfile (сертификаты подменяем самоподписанными).
+      - name: Validate nginx config
+        run: |
+          openssl req -x509 -newkey rsa:2048 -keyout /tmp/key.pem -out /tmp/cert.pem \
+            -days 1 -nodes -subj "/CN=test" >/dev/null 2>&1
+          cp /tmp/cert.pem /tmp/chain.pem
+          docker run --rm \
+            -v "$PWD/docker/nginx-letsencrypt.conf":/etc/nginx/conf.d/default.conf:ro \
+            -v /tmp/cert.pem:/etc/letsencrypt/live/bolotova.online/fullchain.pem:ro \
+            -v /tmp/key.pem:/etc/letsencrypt/live/bolotova.online/privkey.pem:ro \
+            -v /tmp/chain.pem:/etc/letsencrypt/live/bolotova.online/chain.pem:ro \
+            nginx:1.27.3-alpine3.20 nginx -t
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
