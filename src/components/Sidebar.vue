@@ -4,7 +4,7 @@
       <header class="profile-section">
         <div class="profile-img-container">
           <LazyImage 
-            :src="profileData?.profile_image || '/assets/images/profile-photo.jpg'" 
+            :src="profileData?.profile_image || '/assets/images/profile-photo.webp'" 
             :alt="profileData?.title || 'Profile photo'"
             class="profile-image critical-image"
           />

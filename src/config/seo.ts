@@ -14,12 +14,17 @@ export interface SeoMetaConfig {
   ogType?: string
   ogUrl?: string
   ogImage?: string
+  ogImageWidth?: number
+  ogImageHeight?: number
+  ogImageAlt?: string
+  ogSiteName?: string
   ogLocale?: string
   twitterCard?: string
   twitterTitle?: string
   twitterDescription?: string
   twitterImage?: string
   canonicalUrl?: string
+  robots?: string
 }
 
 /**
@@ -70,6 +75,18 @@ export interface SitemapRoute {
 export const BASE_URL = 'https://bolotova.online'
 
 /**
+ * Отдельное og:image 1200×630 для превью в соцсетях/мессенджерах
+ * (JPG: WebP в og:image поддерживается не всеми скрейперами).
+ * Регенерация: npm run og:image
+ */
+export const OG_IMAGE = {
+  path: '/assets/images/og-image.jpg',
+  width: 1200,
+  height: 630,
+  alt: 'Болотова Ксения — бизнес-анализ, требования и AI-инструменты'
+} as const
+
+/**
  * SEO configuration for each route
  */
 export const routeSeoConfig: Record<string, RouteSeoConfig> = {
@@ -99,3 +116,24 @@ export const routeSeoConfig: Record<string, RouteSeoConfig> = {
     ogType: 'article'
   }
 }
+
+/**
+ * SEO-конфиг для catch-all маршрута 404 (страница не найдена)
+ */
+export const notFoundSeoConfig: RouteSeoConfig = {
+  title: 'Страница не найдена — Болотова Ксения',
+  description: 'Запрошенная страница не существует. Вернитесь на главную страницу сайта bolotova.online.',
+  ogType: 'website'
+}
+
+/**
+ * Маршруты для sitemap.xml — единый источник для vite.config.js
+ * (список должен совпадать с ключами routeSeoConfig и маршрутов пререндера)
+ */
+export const sitemapRoutes: SitemapRoute[] = [
+  { path: '/', changefreq: 'weekly', priority: 1.0 },
+  { path: '/projects', changefreq: 'monthly', priority: 0.8 },
+  { path: '/projects/mini-llm', changefreq: 'monthly', priority: 0.7 },
+  { path: '/resume', changefreq: 'monthly', priority: 0.8 },
+  { path: '/privacy', changefreq: 'monthly', priority: 0.3 }
+]

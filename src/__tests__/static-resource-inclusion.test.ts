@@ -122,7 +122,7 @@ describe('Static Resource Inclusion Property Tests', () => {
     fc.assert(
       fc.property(
         fc.record({
-          imageFormats: fc.constant(['jpg', 'jpeg', 'png', 'gif', 'svg']),
+          imageFormats: fc.constant(['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']),
           assetsImagePath: fc.constant('assets/images')
         }),
         (config) => {

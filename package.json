@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:prerender": "vite build && tsx scripts/prerender.ts",
+    "og:image": "tsx scripts/generate-og-image.ts",
     "pdf:policy": "tsx scripts/generate-policy-pdf.ts",
     "preview": "vite preview",
     "test": "vitest --run",
