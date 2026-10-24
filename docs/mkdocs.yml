@@ -23,6 +23,7 @@ theme:
     text: Roboto
     code: Roboto Mono
   features:
+    - navigation.tabs
     - navigation.sections
     - navigation.top
     - search.suggest
@@ -51,19 +52,20 @@ extra:
 not_in_nav: README.md
 
 nav:
-  - "← На основной сайт": "https://bolotova.online"
-  - Главная: index.md
-  - Модуль 1. Новый мир аналитика:
-      - Обзор модуля: modul-1/index.md
-      - "Урок 1.1. Как теперь работает разработка": modul-1/tema-1-kak-teper-rabotaet-razrabotka.md
-      - "Урок 1.2. Почему AI не заменит аналитика": modul-1/tema-2-pochemu-ai-ne-zamenit-analitika.md
-      - "Урок 1.3. Профессия аналитика: карта и стандарты": modul-1/tema-3-karta-professii-v-novom-mire.md
-  - Модуль 2. Система знаний аналитика: modul-2/index.md
-  - Модуль 3. Моделирование процессов и данных: modul-3/index.md
-  - Модуль 4. Артефакты как код (Doc-as-Code): modul-4/index.md
-  - Модуль 5. Управление требованиями: modul-5/index.md
-  - Модуль 6. Совместная работа с AI: modul-6/index.md
-  - Итоговый проект: itogovyy-proekt.md
-  - Материалы:
-      - "Шаблон. Реестр стейкхолдеров": materialy/shablon-reestra-steykholderov.md
-  - Правовая справка: pravovaya-spravka-rf.md
+  - "← На главную": "https://bolotova.online"
+  - Курс:
+      - Главная: index.md
+      - Модуль 1. Новый мир аналитика:
+          - Обзор модуля: modul-1/index.md
+          - "Урок 1.1. Как теперь работает разработка": modul-1/tema-1-kak-teper-rabotaet-razrabotka.md
+          - "Урок 1.2. Почему AI не заменит аналитика": modul-1/tema-2-pochemu-ai-ne-zamenit-analitika.md
+          - "Урок 1.3. Профессия аналитика: карта и стандарты": modul-1/tema-3-karta-professii-v-novom-mire.md
+      - Модуль 2. Система знаний аналитика: modul-2/index.md
+      - Модуль 3. Моделирование процессов и данных: modul-3/index.md
+      - Модуль 4. Артефакты как код (Doc-as-Code): modul-4/index.md
+      - Модуль 5. Управление требованиями: modul-5/index.md
+      - Модуль 6. Совместная работа с AI: modul-6/index.md
+      - Итоговый проект: itogovyy-proekt.md
+      - Материалы:
+          - "Шаблон. Реестр стейкхолдеров": materialy/shablon-reestra-steykholderov.md
+      - Правовая справка: pravovaya-spravka-rf.md
