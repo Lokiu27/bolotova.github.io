@@ -52,9 +52,9 @@ extra:
 not_in_nav: README.md
 
 nav:
-  - "← На главную": "https://bolotova.online"
+  - "← На основной сайт": "https://bolotova.online"
   - Курс:
-      - Главная: index.md
+      - Введение: index.md
       - Модуль 1. Новый мир аналитика:
           - Обзор модуля: modul-1/index.md
           - "Урок 1.1. Как теперь работает разработка": modul-1/tema-1-kak-teper-rabotaet-razrabotka.md
