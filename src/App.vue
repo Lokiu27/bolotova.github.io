@@ -53,17 +53,23 @@ const loadData = async () => {
 
     // Inject Schema.org structured data after loading JSON data
     const { injectSchemas } = useSchemaOrg()
+    // subtitle в hero.json бывает пустым (пробел) — тогда jobTitle
+    // берём из title, чтобы в JSON-LD не попадало пустое значение
+    const jobTitle = heroData.value.subtitle?.trim() || heroData.value.title
+    // Внешние профили для объединения сущности; пустые отфильтровываем
+    const sameAs = [
+      contactsData.value.telegram,
+      contactsData.value.github,
+      contactsData.value.habr
+    ].filter((url): url is string => Boolean(url?.trim()))
     injectSchemas({
       person: {
         name: 'Болотова Ксения',
-        jobTitle: heroData.value.subtitle,
+        jobTitle,
         description: heroData.value.description,
         email: contactsData.value.email,
         url: BASE_URL,
-        sameAs: [
-          contactsData.value.telegram,
-          contactsData.value.github
-        ]
+        sameAs
       },
       website: {
         name: 'Болотова Ксения — Персональный сайт',

@@ -24,6 +24,16 @@ function startServer(distDir: string, port: number = 3000): { server: any; url: 
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url || '/')
     let pathname = parsedUrl.pathname || '/'
+
+    // Браузер percent-кодирует не-ASCII имена файлов (например,
+    // /data/Болотова%20Ксения%20Борисовна.md). Без декодирования existsSync
+    // не находит файл, срабатывает SPA-fallback и страница получает
+    // index.html вместо запрошенных данных — как это было с резюме.
+    try {
+      pathname = decodeURIComponent(pathname)
+    } catch {
+      // некорректная %XX-последовательность — отдаём как есть
+    }
     
     // Resolve file path
     let filePath = resolve(distDir, pathname.slice(1))
@@ -90,6 +100,31 @@ function routeOutputPath(distDir: string, route: string): string {
 }
 
 /**
+ * Проверка снятого HTML до записи на диск: SEO-инварианты, которые
+ * обязан соблюдать каждый пререндеренный файл (падаем в CI, а не в проде)
+ */
+function verifyRenderedHtml(html: string, pageUrl: string, opts: { isNotFound?: boolean } = {}): void {
+  const h1Count = html.match(/<h1[\s>]/gi)?.length ?? 0
+  if (h1Count !== 1) {
+    throw new Error(`${pageUrl}: ожидался ровно один <h1>, найдено ${h1Count}`)
+  }
+  if (opts.isNotFound) {
+    if (!html.includes('noindex')) {
+      throw new Error(`${pageUrl}: на 404-странице нет noindex`)
+    }
+    if (html.includes('rel="canonical"')) {
+      throw new Error(`${pageUrl}: на 404-странице не должно быть canonical`)
+    }
+    return
+  }
+  for (const marker of ['twitter:card', 'og:image:width', 'og:image:height', 'rel="canonical"']) {
+    if (!html.includes(marker)) {
+      throw new Error(`${pageUrl}: в пререндеренном HTML нет ${marker}`)
+    }
+  }
+}
+
+/**
  * Prerender all routes using Puppeteer
  * @param config - Prerender configuration
  */
@@ -110,7 +145,7 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
   /**
    * Render a single URL and save the captured DOM to outputPath
    */
-  const renderAndSave = async (pageUrl: string, outputPath: string): Promise<void> => {
+  const renderAndSave = async (pageUrl: string, outputPath: string, opts: { isNotFound?: boolean } = {}): Promise<void> => {
     const page = await browser.newPage()
 
     // Navigate to the route
@@ -129,6 +164,8 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
     // Extract the full HTML
     const html = await page.evaluate(() => document.documentElement.outerHTML)
 
+    verifyRenderedHtml(html, pageUrl, opts)
+
     mkdirSync(dirname(outputPath), { recursive: true })
     writeFileSync(outputPath, html, 'utf-8')
 
@@ -146,7 +183,7 @@ export async function prerenderRoutes(config: PrerenderConfig): Promise<void> {
     // 404: несуществующий путь попадает в catch-all маршрут NotFound,
     // nginx потом отдаёт этот файл через error_page 404
     console.log(`  Rendering: ${notFoundPath} (404 page)`)
-    await renderAndSave(`${url}${notFoundPath}`, resolve(distDir, '404.html'))
+    await renderAndSave(`${url}${notFoundPath}`, resolve(distDir, '404.html'), { isNotFound: true })
 
     // Страховка: nginx отдаёт только реальные файлы (без SPA-fallback),
     // поэтому отсутствие любого вывода уронило бы страницу в проде —

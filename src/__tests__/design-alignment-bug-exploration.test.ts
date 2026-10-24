@@ -77,15 +77,16 @@ describe('Design Alignment Bug Exploration - Visual Alignment Verification', () 
   })
 
   describe('Profile Name Structure Discrepancies', () => {
-    it('should verify profile name is now a single h1 element', () => {
+    it('should verify profile name is a single p element (H1 reserved for page content)', () => {
       const profileTitle = wrapper.find('.profile-title')
-      
-      // After fix: Should have single h1 element containing both name parts
+
+      // Имя и роль одним элементом; это p — единственный h1 на странице
+      // теперь заголовок контента (на главной — h1#about-heading в About)
       expect(profileTitle.exists()).toBe(true)
-      expect(profileTitle.element.tagName).toBe('H1')
+      expect(profileTitle.element.tagName).toBe('P')
       expect(profileTitle.text()).toContain('John Doe')
       expect(profileTitle.text()).toContain('Full Stack Developer')
-      
+
       // Should NOT have separate subtitle element
       const profileSubtitle = wrapper.find('.profile-subtitle')
       expect(profileSubtitle.exists()).toBe(false)

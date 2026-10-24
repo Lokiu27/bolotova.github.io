@@ -157,21 +157,31 @@ describe('Bug Condition Exploration Tests', () => {
   describe('1.5 Performance - Blocking Font Load Test', () => {
     /**
      * **Validates: Requirements 1.5**
-     * 
-     * Tests that fonts are loaded via blocking @import in CSS.
-     * Note: HTML already has preconnect hints, but CSS @import still blocks rendering.
-     * 
-     * Expected: Test FAILS - Blocking @import found in CSS
+     *
+     * Fonts are self-hosted (JetBrains Mono woff2 via @font-face in main.css,
+     * no Google Fonts <link> in index.html) — no render-blocking third-party CSS.
+     *
+     * Expected: Test PASSES - no blocking @import, no external font origins
      */
-    it('should use blocking @import for fonts in CSS (bug exists)', () => {
+    it('should self-host fonts without blocking @import or external origins', () => {
       const mainCssPath = join(process.cwd(), 'src/assets/css/main.css')
-      
+      const indexPath = join(process.cwd(), 'index.html')
+
       if (existsSync(mainCssPath)) {
         const mainCss = readFileSync(mainCssPath, 'utf-8')
-        
-        // BUG: This should fail because @import is used (blocking)
-        expect(mainCss).toContain('@import')
-        expect(mainCss.toLowerCase()).toContain('fonts.googleapis.com')
+
+        expect(mainCss).not.toContain('@import')
+        expect(mainCss).toContain("@font-face")
+        expect(mainCss).toContain("'JetBrains Mono'")
+        expect(mainCss.toLowerCase()).not.toContain('fonts.googleapis.com')
+        expect(mainCss.toLowerCase()).not.toContain('fonts.gstatic.com')
+      }
+
+      if (existsSync(indexPath)) {
+        const indexHtml = readFileSync(indexPath, 'utf-8')
+
+        expect(indexHtml).not.toContain('fonts.googleapis.com')
+        expect(indexHtml).not.toContain('fonts.gstatic.com')
       }
     })
   })

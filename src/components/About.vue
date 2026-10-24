@@ -3,14 +3,16 @@
     <!-- Hero section with mission statement label -->
     <section class="about-header hero-section">
       <div class="section-label mission-label">[ MISSION STATEMENT ]</div>
-      <h2 id="about-heading" class="about-title tagline glitch-hover">
+      <!-- h1: About используется только на главной, и это её главный
+           заголовок (ценностное предложение) — сайдбар больше не h1 -->
+      <h1 id="about-heading" class="about-title tagline glitch-hover">
         <template v-if="aboutData?.title">
           {{ aboutData.title }}
         </template>
         <template v-else>
           ПОМОГУ СОЗДАТЬ <span class="tagline-highlight">ЭФФЕКТИВНУЮ КОМАНДУ</span> БИЗНЕС-АНАЛИТИКОВ И ВНЕДРЯТЬ СОВРЕМЕННЫЕ ТЕХНОЛОГИИ.
         </template>
-      </h2>
+      </h1>
       <p class="tagline-highlight about-description">
         {{ aboutData?.description || '>> ФАНАТ AI ИНСТРУМЕНТОВ.' }}
       </p>

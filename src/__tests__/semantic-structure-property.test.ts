@@ -256,17 +256,24 @@ describe('Property 17: Semantic HTML Structure', () => {
             }
           })
 
-          // Должен быть h2 для главного заголовка (h1 находится в Sidebar)
+          // Главный заголовок About — h1 (Sidebar с именем теперь p,
+          // единственный h1 на главной — этот заголовок)
+          const h1 = wrapper.find('h1')
+          expect(h1.exists()).toBe(true)
+
           const h2 = wrapper.find('h2')
           expect(h2.exists()).toBe(true)
-          
+
           // Должны быть h3 для feature titles
           const h3s = wrapper.findAll('h3')
           expect(h3s.length).toBeGreaterThan(0)
-          
-          // h2 должен быть перед h3
-          const h2Index = wrapper.html().indexOf('<h2')
-          const h3Index = wrapper.html().indexOf('<h3')
+
+          // h1 → h2 → h3 по порядку документа
+          const html = wrapper.html()
+          const h1Index = html.indexOf('<h1')
+          const h2Index = html.indexOf('<h2')
+          const h3Index = html.indexOf('<h3')
+          expect(h1Index).toBeLessThan(h2Index)
           expect(h2Index).toBeLessThan(h3Index)
         }
       ),

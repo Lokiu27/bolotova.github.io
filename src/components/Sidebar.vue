@@ -10,7 +10,10 @@
           />
         </div>
         <div class="role-badge">{{ profileData?.role || 'CONSULTING / BUSINESS ANALYSIS & AI' }}</div>
-        <h1 class="profile-title glitch-hover">{{ profileData?.title?.trim() }}<br>{{ profileData?.subtitle?.trim() }}</h1>
+        <!-- p, а не h1: единственный H1 на странице — заголовок её контента
+             (на главной это h1#about-heading), имя/роль в сайдбаре повторяются
+             на всех маршрутах и не должны конкурировать с ним -->
+        <p class="profile-title glitch-hover">{{ profileData?.title?.trim() }}<br>{{ profileData?.subtitle?.trim() }}</p>
         <p class="profile-description">{{ profileData?.description?.trim() }}</p>
       </header>
       

@@ -28,6 +28,8 @@ export const ContactsDataSchema = z.object({
   email: z.string().email('Invalid email format'),
   telegram: z.string().min(1, 'Telegram is required'),
   github: z.string().min(1, 'GitHub is required'),
+  // Хабр в Person.sameAs; '' = «профиль пока не указан» (в sameAs не попадёт)
+  habr: z.union([z.literal(''), z.string().url('Invalid URL format')]).optional(),
   resume: z.string().optional()
 })
 

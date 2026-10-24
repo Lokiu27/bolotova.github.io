@@ -22,6 +22,8 @@ export interface ContactsData {
   email: string;
   telegram: string;
   github: string;
+  /** Хабр-профиль для Person.sameAs; '' или отсутствие = не указан */
+  habr?: string;
   resume: string;
 }
 
