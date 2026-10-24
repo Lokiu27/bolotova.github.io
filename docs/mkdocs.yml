@@ -23,7 +23,6 @@ theme:
     text: Roboto
     code: Roboto Mono
   features:
-    - navigation.tabs
     - navigation.sections
     - navigation.top
     - search.suggest
@@ -52,7 +51,7 @@ extra:
 not_in_nav: README.md
 
 nav:
-  - "← На главную": "https://bolotova.online"
+  - "← На основной сайт": "https://bolotova.online"
   - Главная: index.md
   - Модуль 1. Новый мир аналитика:
       - Обзор модуля: modul-1/index.md
