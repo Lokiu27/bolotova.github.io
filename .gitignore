@@ -7,6 +7,10 @@ dist/
 # Готовый SPA-бандл, который CI заливает на VPS для COPY-only образа
 dist-prebuilt/
 
+# Готовый MkDocs-сайт курса (BA_Course), заливается так же
+course-prebuilt/
+docs-build/
+
 # Logs
 *.log
 npm-debug.log*
