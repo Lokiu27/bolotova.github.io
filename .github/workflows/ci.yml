@@ -73,8 +73,52 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  # Курс (MkDocs из репозитория BA_Course) собирается на раннере по той же
+  # причине, что и SPA: pip-install и git-клон внутри Docker-сборки на VPS
+  # подвешивали деплой на 10-20 минут (деградированная сеть — fae4c58).
+  # На раннере сборка занимает ~30 секунд. Контент подтягивается свежий
+  # при каждом деплое, в том числе по repository_dispatch из BA_Course.
+  build-course:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: docs/requirements.txt
+
+      - name: Install MkDocs dependencies
+        run: pip install -r docs/requirements.txt
+
+      # Схема как в удалённой mkdocs-стадии Dockerfile: mkdocs.yml ждёт
+      # контент курса в content/ рядом с конфигом (docs_dir: content)
+      - name: Clone course content (BA_Course)
+        run: |
+          git clone --depth 1 https://github.com/Lokiu27/BA_Course.git docs-build/content
+          cp docs/mkdocs.yml docs-build/mkdocs.yml
+          echo "BA_Course на сборке: $(git -C docs-build/content rev-parse --short HEAD)"
+
+      # --strict не используем: README.md BA_Course (инструкции для авторов)
+      # исключён из nav через not_in_nav, но strict-режим избыточно хрупок
+      # для контента, который редактируется отдельно от этого репозитория
+      - name: Build course (mkdocs build)
+        run: mkdocs build -f docs-build/mkdocs.yml
+
+      - name: Upload course bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: course-dist
+          path: docs-build/site
+          if-no-files-found: error
+          retention-days: 1
+
   deploy:
-    needs: build
+    needs: [build, build-course]
     if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
@@ -212,6 +256,12 @@ jobs:
           name: spa-dist
           path: dist
 
+      - name: Download course bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: course-dist
+          path: course-dist
+
       - name: Update code on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -293,6 +343,20 @@ jobs:
           rm: true
           command_timeout: 20m
 
+      - name: Upload course bundle to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ steps.vps_config.outputs.host }}
+          username: ${{ steps.vps_config.outputs.username }}
+          # scp-action — composite-экшен, ключ по хостовому пути (см. шаг SPA)
+          key_path: /home/runner/work/_temp/vps_deploy_key
+          port: ${{ steps.vps_config.outputs.port }}
+          source: "course-dist/*"
+          target: ${{ steps.vps_config.outputs.project_path }}/course-prebuilt
+          strip_components: 1
+          rm: true
+          command_timeout: 20m
+
       - name: Build and restart container on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -311,6 +375,10 @@ jobs:
             cd "$project_path"
             if [ ! -f dist-prebuilt/index.html ]; then
               stamp "ОШИБКА: dist-prebuilt/index.html нет — бандл не доехал"
+              exit 1
+            fi
+            if [ ! -f course-prebuilt/index.html ]; then
+              stamp "ОШИБКА: course-prebuilt/index.html нет — курс не доехал"
               exit 1
             fi
             stamp "docker compose build/up (COPY-only, без npm/vite)"
