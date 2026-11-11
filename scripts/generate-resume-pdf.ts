@@ -162,7 +162,12 @@ async function main(): Promise<void> {
 
   const html = buildHtml(markdown)
 
-  const browser = await puppeteer.launch()
+  // Те же флаги, что и в prerender.ts: в CI (GitHub Actions, Ubuntu) Chrome
+  // не стартует без отключения sandbox — «No usable sandbox!»
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  })
   try {
     const page = await browser.newPage()
     await page.setContent(html, { waitUntil: 'networkidle0' })
