@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:prerender": "npm run pdf:resume && vite build && tsx scripts/prerender.ts",
+    "generate:llms": "tsx scripts/generate-llms.ts",
     "og:image": "tsx scripts/generate-og-image.ts",
     "og:image:course": "tsx scripts/generate-og-image-course.ts",
     "favicons": "tsx scripts/generate-favicons.ts",

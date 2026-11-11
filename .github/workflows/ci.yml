@@ -57,6 +57,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      # llms.txt / llms-full.txt пересобираются из свежего BA_Course на каждом
+      # деплое — закоммиченные копии в public/ не могут рассинхронизироваться
+      # с курсом (см. scripts/generate-llms.ts)
+      - name: Generate llms.txt from fresh BA_Course
+        run: |
+          git clone --depth 1 https://github.com/Lokiu27/BA_Course.git docs-build/content
+          npm run generate:llms
+
       # vite build + Puppeteer-пререндер: статический HTML с per-page
       # мета-тегами, canonical и JSON-LD для каждого маршрута + 404.html
       - name: Build project (vite build + prerender)
