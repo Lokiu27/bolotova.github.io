@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://bolotova.online/sitemap.xml
+Sitemap: https://bolotova.online/course/sitemap.xml

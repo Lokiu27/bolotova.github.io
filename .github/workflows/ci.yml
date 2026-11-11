@@ -103,6 +103,11 @@ jobs:
           cp docs/mkdocs.yml docs-build/mkdocs.yml
           echo "BA_Course на сборке: $(git -C docs-build/content rev-parse --short HEAD)"
 
+      # nav собирается из свежего контента курса — ручная синхронизация
+      # mkdocs.yml со структурой BA_Course не нужна (см. docs/generate_nav.py)
+      - name: Generate course nav
+        run: python docs/generate_nav.py --content docs-build/content --config docs-build/mkdocs.yml
+
       # --strict не используем: README.md BA_Course (инструкции для авторов)
       # исключён из nav через not_in_nav, но strict-режим избыточно хрупок
       # для контента, который редактируется отдельно от этого репозитория

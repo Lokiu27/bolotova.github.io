@@ -39,3 +39,5 @@ yarn-error.log*
 
 # Playwright screenshots and test artifacts
 .playwright-mcp/
+# Python venv для локальной сборки курса (см. DEPLOY.md)
+.venv/

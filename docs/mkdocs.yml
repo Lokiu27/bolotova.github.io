@@ -51,17 +51,6 @@ extra:
 # README.md BA_Course — инструкции для авторов, в навигацию курса не входит
 not_in_nav: README.md
 
-nav:
-  - "← На основной сайт": "https://bolotova.online"
-  - Курс:
-      - Введение: index.md
-      - "Модуль 1. Новый мир: от идеи к намерению": modul-1/index.md
-      - "Модуль 2. Система знаний бизнес-аналитика": modul-2/index.md
-      - Модуль 3. Моделирование процессов и данных: modul-3/index.md
-      - Модуль 4. Артефакты как код (Doc-as-Code): modul-4/index.md
-      - "Модуль 5. Управление требованиями: проверяемость, изменения, трассировка": modul-5/index.md
-      - "Модуль 6. Совместная работа с AI: полный цикл и роль аналитика": modul-6/index.md
-      - Итоговый проект: itogovyy-proekt.md
-      - Материалы:
-          - "Шаблон. Реестр стейкхолдеров": materialy/shablon-reestra-steykholderov.md
-          - "Правовая справка. AI и законодательство РФ": materialy/pravovaya-spravka-rf.md
+# nav не задаётся вручную: его собирает docs/generate_nav.py из свежего
+# контента BA_Course перед каждой сборкой (CI: job build-course; локально:
+# см. DEPLOY.md). Секции nav в этом файле быть не должно.
