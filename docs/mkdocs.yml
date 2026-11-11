@@ -1,10 +1,14 @@
-site_name: "Курс по бизнес-анализу"
+site_name: "Управление требованиями с AI"
 site_url: "https://bolotova.online/course/"
 docs_dir: "content"
 site_dir: "site"
 
 theme:
   name: material
+  # Оверрайд<head>: og-теги и JSON-LD Course (docs/custom/main.html).
+  # Путь относительно расположения mkdocs.yml; в CI конфиг копируется в
+  # docs-build/, поэтому "../docs" — репозиторный docs/ (cwd = корень репо).
+  custom_dir: "../docs/custom"
   language: ru
   palette:
     - scheme: default
@@ -47,6 +51,15 @@ markdown_extensions:
 
 extra:
   homepage: https://bolotova.online
+  # og:image курса — картинка лежит на основном сайте и генерируется
+  # npm run og:image:course (scripts/generate-og-image-course.ts)
+  og_image_course: https://bolotova.online/assets/images/og-image-course.jpg
+
+# Мета-слой курса: built-in meta-плагин Material (og:title и т.д.) появился
+# только в 9.6, а requirements.txt держит 9.5.47 — поэтому og:title /
+# og:description / og:type / og:image и JSON-LD Course добавляет оверрайд
+# docs/custom/main.html (блок extrahead base.html), а page title и
+# description — front-matter страниц BA_Course.
 
 # README.md BA_Course — инструкции для авторов, в навигацию курса не входит
 not_in_nav: README.md

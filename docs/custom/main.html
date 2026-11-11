@@ -1,0 +1,84 @@
+{#-
+  Оверрайд head страниц курса (bolotova.online/course).
+
+  Built-in meta-плагин Material появился только в 9.6, а requirements.txt
+  держит 9.5.47, поэтому og-теги и JSON-LD Course добавляются напрямую:
+  блок extrahead из base.html рендерится в конце <head> каждой страницы.
+
+  Источники значений:
+  - og:title — front-matter title страницы, иначе заголовок (как в <title>);
+  - og:description — front-matter description (есть на всех страницах курса);
+  - og:image — extra.og_image_course из mkdocs.yml, картинку генерирует
+    npm run og:image:course (scripts/generate-og-image-course.ts) на
+    основном сайте;
+  - JSON-LD Course — только на главной курса (index.md в корне контента;
+    page.is_homepage тут ложно, потому что страница вложена в nav-раздел
+    «Курс»); hasPart собирается из nav-раздела «Курс», то есть автоматически
+    следует за структурой, которую generate_nav.py построил из контента
+    BA_Course.
+-#}
+{% extends "base.html" %}
+
+{% block extrahead %}
+{%- if page and page.canonical_url %}
+{%- set og_title = ((page.meta.get('title') if page.meta else none) or page.title) | striptags %}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ og_title }}">
+    <meta property="og:url" content="{{ page.canonical_url }}">
+    <meta property="og:site_name" content="{{ config.site_name }}">
+{%- if page.meta and page.meta.description %}
+    <meta property="og:description" content="{{ page.meta.description }}">
+{%- endif %}
+{%- if config.extra.og_image_course %}
+    <meta property="og:image" content="{{ config.extra.og_image_course }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Управление требованиями с AI — курс по бизнес-анализу, bolotova.online/course">
+    <meta name="twitter:card" content="summary_large_image">
+{%- endif %}
+{%- if page.file.src_uri == 'index.md' %}
+{%- set ns = namespace(pages=[]) %}
+{%- if nav %}
+{%- for item in nav.items %}
+{%- if item.is_section and item.title == 'Курс' %}
+{%- for child in item.children %}
+{%- if child.is_section %}
+{%- for sub in child.children %}
+{%- set _ = ns.pages.append(sub) %}
+{%- endfor %}
+{%- else %}
+{%- set _ = ns.pages.append(child) %}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{%- set course_ld = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": config.site_name,
+  "description": page.meta.description,
+  "inLanguage": "ru",
+  "url": page.canonical_url,
+  "provider": {
+    "@type": "Person",
+    "name": "Болотова Ксения",
+    "url": "https://bolotova.online/"
+  }
+} %}
+{%- if ns.pages %}
+{%- set items = [] %}
+{%- for p in ns.pages %}
+{%- set _ = items.append({
+  "@type": "ListItem",
+  "position": loop.index,
+  "name": p.title | striptags,
+  "url": p.canonical_url
+}) %}
+{%- endfor %}
+{%- set _ = course_ld.update({"hasPart": {"@type": "ItemList", "itemListElement": items}}) %}
+{%- endif %}
+    <script type="application/ld+json">{{ course_ld | tojson }}</script>
+{%- endif %}
+{%- endif %}
+{% endblock %}
