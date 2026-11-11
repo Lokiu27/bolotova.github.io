@@ -20,8 +20,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Полная история нужна sitemap-плагину: lastmod маршрутов считается
+      # по последнему коммиту их контент-файлов (vite-plugin-sitemap.ts)
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       # nginx-конфиг проверяется только при старте контейнера на VPS —
       # битый конфиг уронил бы прод на деплое. Валидируем заранее в том же

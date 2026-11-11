@@ -92,13 +92,17 @@ router.afterEach((to) => {
 
   const seoConfig = routeSeoConfig[to.path]
   if (seoConfig) {
+    // nginx отдаёт страницы каталогами: /resume → 301 → /resume/ (200).
+    // canonical и og:url должны указывать на финальный 200-URL, иначе
+    // поисковик индексирует канон, который сам является редиректом.
+    const finalUrl = `${BASE_URL}${to.path === '/' ? '/' : `${to.path}/`}`
     setMeta({
       title: seoConfig.title,
       description: seoConfig.description,
       ogTitle: seoConfig.title,
       ogDescription: seoConfig.description,
       ogType: seoConfig.ogType,
-      ogUrl: `${BASE_URL}${to.path}`,
+      ogUrl: finalUrl,
       ogImage: `${BASE_URL}${OG_IMAGE.path}`,
       ogImageWidth: OG_IMAGE.width,
       ogImageHeight: OG_IMAGE.height,
@@ -109,7 +113,7 @@ router.afterEach((to) => {
       twitterTitle: seoConfig.title,
       twitterDescription: seoConfig.description,
       twitterImage: `${BASE_URL}${OG_IMAGE.path}`,
-      canonicalUrl: `${BASE_URL}${to.path}`,
+      canonicalUrl: finalUrl,
       robots: 'index, follow'
     })
   }
