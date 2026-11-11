@@ -46,6 +46,10 @@ export interface SchemaOrgConfig {
     description: string
     email: string
     url: string
+    /** Абсолютный URL фото-профиля */
+    image: string
+    /** Тематические области экспертизы для entity «эксперт по управлению требованиями с AI» */
+    knowsAbout: string[]
     sameAs: string[]
   }
   website: {
@@ -87,12 +91,33 @@ export const OG_IMAGE = {
 } as const
 
 /**
+ * Тематические области для Person JSON-LD (knowsAbout):
+ * связывают entity с целевыми запросами («управление требованиями с AI»)
+ */
+export const PERSON_KNOWS_ABOUT = [
+  'Управление требованиями',
+  'Бизнес-анализ',
+  'AI-инструменты для аналитиков',
+  'Spec-driven development',
+  'BPMN',
+  'Doc-as-Code'
+] as const
+
+/**
+ * Внешние профили для Person.sameAs помимо contacts.json
+ * (telegram/github/habr берутся из public/data/contacts.json)
+ */
+export const PERSON_SAME_AS_EXTRA = [
+  'https://ru.linkedin.com/in/kbolotova'
+] as const
+
+/**
  * SEO configuration for each route
  */
 export const routeSeoConfig: Record<string, RouteSeoConfig> = {
   '/': {
-    title: 'Болотова Ксения — Эксперт по бизнес-анализу и AI инструментам',
-    description: 'Помогу создать эффективную команду бизнес-аналитиков и внедрить AI инструменты. Формирование команд, стратегический подход, автоматизация. Консультирую компании. Менторинг.',
+    title: 'Болотова Ксения — управление требованиями и бизнес-анализ с AI',
+    description: 'Помогу выстроить управление требованиями с помощью AI-инструментов: процессы, стандарты и команды бизнес-анализа. Консультирую компании. Менторинг.',
     ogType: 'website'
   },
   '/projects': {

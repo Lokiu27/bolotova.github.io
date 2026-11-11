@@ -10,7 +10,7 @@ import { heroDataKey, aboutDataKey, contactsDataKey } from './types/injection-ke
 import { validateHeroData, validateAboutData, validateContactsData, validateHomepageBlocksData } from './schemas/data-schemas'
 import { ZodError } from 'zod'
 import { useSchemaOrg } from './composables/useSchemaOrg'
-import { BASE_URL } from './config/seo'
+import { BASE_URL, PERSON_KNOWS_ABOUT, PERSON_SAME_AS_EXTRA } from './config/seo'
 
 const heroData = ref<HeroData>()
 const aboutData = ref<AboutData>()
@@ -51,11 +51,13 @@ const loadData = async () => {
     // subtitle в hero.json бывает пустым (пробел) — тогда jobTitle
     // берём из title, чтобы в JSON-LD не попадало пустое значение
     const jobTitle = heroData.value.subtitle?.trim() || heroData.value.title
-    // Внешние профили для объединения сущности; пустые отфильтровываем
+    // Внешние профили для объединения сущности; пустые отфильтровываем.
+    // LinkedIn и остальные добавляются из конфига (PERSON_SAME_AS_EXTRA)
     const sameAs = [
       contactsData.value.telegram,
       contactsData.value.github,
-      contactsData.value.habr
+      contactsData.value.habr,
+      ...PERSON_SAME_AS_EXTRA
     ].filter((url): url is string => Boolean(url?.trim()))
     injectSchemas({
       person: {
@@ -64,6 +66,8 @@ const loadData = async () => {
         description: heroData.value.description,
         email: contactsData.value.email,
         url: BASE_URL,
+        image: `${BASE_URL}${heroData.value.profile_image}`,
+        knowsAbout: [...PERSON_KNOWS_ABOUT],
         sameAs
       },
       website: {
