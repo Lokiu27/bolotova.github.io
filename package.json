@@ -9,10 +9,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:prerender": "vite build && tsx scripts/prerender.ts",
+    "build:prerender": "npm run pdf:resume && vite build && tsx scripts/prerender.ts",
     "og:image": "tsx scripts/generate-og-image.ts",
     "favicons": "tsx scripts/generate-favicons.ts",
     "pdf:policy": "tsx scripts/generate-policy-pdf.ts",
+    "pdf:resume": "tsx scripts/generate-resume-pdf.ts",
     "preview": "vite preview",
     "test": "vitest --run",
     "test:watch": "vitest",

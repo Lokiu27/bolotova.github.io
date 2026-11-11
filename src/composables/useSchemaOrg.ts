@@ -50,6 +50,8 @@ export function useSchemaOrg(): UseSchemaOrg {
     description: person.description,
     email: person.email,
     url: person.url,
+    image: person.image,
+    knowsAbout: person.knowsAbout,
     sameAs: person.sameAs
   })
 
