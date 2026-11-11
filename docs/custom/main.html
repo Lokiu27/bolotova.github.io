@@ -57,7 +57,7 @@
   "@context": "https://schema.org",
   "@type": "Course",
   "name": config.site_name,
-  "description": page.meta.description,
+  "description": (page.meta.get('description') if page.meta else none) or config.site_name,
   "inLanguage": "ru",
   "url": page.canonical_url,
   "provider": {
