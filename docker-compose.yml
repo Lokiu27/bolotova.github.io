@@ -3,7 +3,11 @@ services:
     build: .
     container_name: portfolio-web
     ports:
-      - "8081:80"      # HTTP (для редиректа и обновления сертификата)
+      # HTTP: редирект на HTTPS + HTTP-01 challenge для Let's Encrypt.
+      # Хостер-фаервол пропускает только 22/80/443 — прежний маппинг
+      # 8081:80 снаружи был недоступен (тихий DROP), из-за закрытого :80
+      # Yandex Webmaster видел отказ ("502") на http://bolotova.online:80.
+      - "80:80"
       - "443:443"    # HTTPS с Let's Encrypt
     restart: unless-stopped
     volumes:

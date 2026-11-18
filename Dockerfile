@@ -21,8 +21,11 @@ COPY docker/nginx-letsencrypt.conf /etc/nginx/conf.d/default.conf
 COPY dist-prebuilt/ /usr/share/nginx/html
 COPY course-prebuilt/ /usr/share/nginx/course
 
+# 127.0.0.1, не localhost: alpine резолвит его в ::1 (nginx слушает только
+# IPv4, wget адреса не перебирает). /healthz, не /: :80-блок отдаёт 301 на
+# HTTPS, а busybox-wget считает любой 3xx ошибкой (детали в nginx-конфиге).
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/healthz || exit 1
 
 EXPOSE 80
 
